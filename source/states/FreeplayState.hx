@@ -1,5 +1,6 @@
 package states;
 
+import states.UnfinishedWarn.UnfinishedWarning;
 import backend.WeekData;
 import backend.Highscore;
 import backend.Song;
@@ -16,7 +17,6 @@ import substates.ResetScoreSubState;
 #if MODS_ALLOWED
 import sys.FileSystem;
 #end
-
 class FreeplayState extends MusicBeatState
 {
 	var songs:Array<SongMetadata> = [];
@@ -49,10 +49,12 @@ class FreeplayState extends MusicBeatState
 	var missingText:FlxText;
 
 	var songText:Alphabet;
-	var currentIndex:Int = 0;
+	var freeplayChars:FlxSprite;
 
 	override function create()
 	{
+		freeplayChars = new FlxSprite(797, 86);
+
 		//Paths.clearStoredMemory();
 		//Paths.clearUnusedMemory();
 		
@@ -313,7 +315,7 @@ class FreeplayState extends MusicBeatState
 				MusicBeatState.switchState(new FNFMainMenu());
 			}
 			else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-				MusicBeatState.switchState(new ProjectEngineMouse());
+				MusicBeatState.switchState(new UnfinishedWarning());
 			}
 		}
 
@@ -456,6 +458,10 @@ class FreeplayState extends MusicBeatState
 			curSelected = songs.length - 1;
 		if (curSelected >= songs.length)
 			curSelected = 0;
+
+		freeplayChars.loadGraphic(Paths.image('freeplayChars/' + songs[curSelected].songName));
+		freeplayChars.visible = ClientPrefs.data.enablefreeplayChars;
+		add(freeplayChars);
 			
 		var newColor:Int = songs[curSelected].color;
 		if(newColor != intendedColor) {

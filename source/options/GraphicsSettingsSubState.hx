@@ -58,6 +58,12 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		option.onChange = onChangeFramerate;
 		#end
 
+		var option:Option = new Option('Gore',
+			"Pretty self explanatory, isn't it?",
+			'goreEnabled',
+			'bool');
+		addOption(option);
+
 		super();
 		insert(1, boyfriend);
 	}

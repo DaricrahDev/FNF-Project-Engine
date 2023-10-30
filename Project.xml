@@ -2,7 +2,7 @@
 <project>
 	<!-- _________________________ Application Settings _________________________ -->
 
-	<app title="Friday Night Funkin': Project Engine" file="Project Engine" packageName="com.daricrahdev.projectengine" package="com.daricrahdev.projectengine" main="Main" version="0.4.2" company="Project Team" />
+	<app title="Friday Night Funkin': Project Engine" file="Project Engine" packageName="com.daricrahdev.projectengine" package="com.daricrahdev.projectengine" main="Main" version="0.5" company="Project Team" />
 
 	<!--Switch Export with Unique ApplicationID and Icon-->
 	<set name="APP_ID" value="0x0100f6c013bbc000" />
@@ -22,7 +22,7 @@
 
 	<define name="MODS_ALLOWED" if="desktop" />
 	<define name="LUA_ALLOWED" if="desktop" />
-	<define name="ACHIEVEMENTS_ALLOWED" />
+	<!--<define name="ACHIEVEMENTS_ALLOWED" /> -->
 	<define name="VIDEOS_ALLOWED" if="windows || linux || android" unless="32bits"/>
 	<!-- DELETE THIS TO REMOVE WATERMARKS/DEV NAMES ON TITLE SCREEN -->
 	<define name="TITLE_SCREEN_EASTER_EGG" if="officialBuild"/> <!-- DELETE THE if="officialBuild" for enabling this on an unofficial build -->
@@ -70,10 +70,10 @@
 	</section>
 
 	<!-- DONT ENABLE THIS -->
-	<define name="CHECK_FOR_UPDATES" if="desktop officialBuild"/>
+	<!-- <define name="CHECK_FOR_UPDATES" if="desktop"/> -->
 
 	<!-- Week Assets -->
-	<library name="videos"        preload="true" />
+	<library name="videos"       	 preload="true" />
 	<section if="PRELOAD_ALL">
 		<library name="songs"         preload="true" />
 		<library name="shared"        preload="true" />

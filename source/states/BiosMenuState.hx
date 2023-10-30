@@ -1,5 +1,6 @@
 package states;
 
+import states.UnfinishedWarn.UnfinishedWarning;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
@@ -17,11 +18,24 @@ import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.app.Application;
 import openfl.Assets;
+import tjson.TJSON as Json;
 #if sys
 import sys.FileSystem;
 #end
 import flixel.addons.ui.FlxInputText;
 
+typedef BiosMenuJSON =
+{
+	people:Array<String>,
+	descriptions:Array<String>,
+	links:Array<String>,
+	badgeImages:Array<String>,
+	imageLinks:Array<String>,
+	badgeText:Array<String>,
+	backgroundSprite:String,
+	bgColor:String,
+	gradientColor:String
+}
 class BiosMenuState extends MusicBeatState {
 	
 	var bg:FlxSprite;
@@ -38,45 +52,29 @@ class BiosMenuState extends MusicBeatState {
 
 	var curSelected:Int = -1;
 	var currentIndex:Int = 0;
-	var hue:Float = 0;
 
     var descriptionText:FlxText;
     var characterName:FlxText;
 
-	var intendedColor:Int;
-	var colorTween:Array<FlxColor>;
-
-	var discord:FlxText;
 	var gradient:FlxSprite;
 
-	// stealing code from titlestate yeeesssssss
-	var characterNames:Array<String> = []; // dis one for character names
-	var descriptionThing:Array<String> = []; // dis one for description
 	var badgeImageStuff:Array<String> = []; // dis one for badge images
 	var badgeTextStuff:Array<String> = []; // and dis one for badge text
 	var customBGc:Array<String> = []; // bg color
-	var funnilinks:Array<String> = [];
 
 	var badgeImg:FlxSprite;
 	var badgetextx:FlxText;
 
-	var arrowUp:FlxSprite;
-	var arrowDown:FlxSprite;
+	var biosJSON:BiosMenuJSON;
 
 	override function create() {
 		
+		biosJSON = Json.parse(Paths.getTextFromFile('moddingTools/customBios/customBios.json'));
+
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
 
 		FlxG.mouse.visible = true;
-
-		// let bro cook
-		characterNames = FlxG.random.getObject(characterNamesShit());
-		descriptionThing = FlxG.random.getObject(descNamesShit());
-		badgeImageStuff = FlxG.random.getObject(badgeImages());
-		badgeTextStuff = FlxG.random.getObject(badgeTextShit());
-		customBGc = FlxG.random.getObject(getbgc());
-		funnilinks = FlxG.random.getObject(getTxtLinks());
 
 		#if desktop
 		// Updating Discord Rich Presence
@@ -85,13 +83,13 @@ class BiosMenuState extends MusicBeatState {
 	
 		background = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
         background.setGraphicSize(Std.int(background.width * 1.2));
-		background.color = CoolUtil.colorFromString(customBGc[0]);
+		background.color = CoolUtil.colorFromString(biosJSON.bgColor);
         background.screenCenter();
         add(background);
 
 		gradient = new FlxSprite().loadGraphic(Paths.image('gradient_white'));
 		gradient.screenCenter();
-		gradient.color = CoolUtil.colorFromString(customBGc[1]);
+		gradient.color = CoolUtil.colorFromString(biosJSON.gradientColor);
 		gradient.scale.set(1.1, 1.1);
 		gradient.x += 20;
 		add(gradient);
@@ -102,45 +100,24 @@ class BiosMenuState extends MusicBeatState {
 		grid.alpha = 0;
 		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
 		add(grid);
+	
+		imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image(biosJSON.imageLinks[currentIndex]));
+		add(imageSprite);
 
-		// EDIT YOU IMAGES HERE / DONT FORGET TO CREATE A FOLDER IN images CALLED bios IT SHOULD LOOK LIKE THIS 'images/bios'
-		// REMINDER!!! THE IMAGES MUST BE 518x544, IF NOT, THEY WONT FIT ON THE SCREEN!!
-		imagePath = ["bios/1", "bios/2", "bios/3", "bios/4", "bios/5"];
-
-		//funni links
-		peopleLinks = [funnilinks[0], funnilinks[1], funnilinks[2], funnilinks[3], funnilinks[4]];
-
-		// badge text
-		badgeText = [badgeTextStuff[0], badgeTextStuff[1], badgeTextStuff[2], badgeTextStuff[3], badgeTextStuff[4]];
-
-		// badge img
-		badgeimg = [badgeImageStuff[0], badgeImageStuff[1], badgeImageStuff[2], badgeImageStuff[3], badgeImageStuff[4]];
-
-		// DESCRIPTION HERE
-        charDesc = [descriptionThing[0], descriptionThing[1], descriptionThing[2], descriptionThing[3], descriptionThing[4]];
-
-		// NAME HERE
-        charName = [characterNames[0], characterNames[1], characterNames[2], characterNames[3], characterNames[4]];
-
-
-		// SET UP THE FIRST IMAGE YOU WANT TO SEE WHEN ENTERING THE MENU
-		imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image("bios/1"));
-        add(imageSprite);
-
-		badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image('badge4'));
+		badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image(biosJSON.badgeImages[currentIndex]));
 		add(badgeImg);
 
-		badgetextx = new FlxText(1069, 628, 197, 'Main Programmer');
+		badgetextx = new FlxText(1069, 628, 197, biosJSON.badgeText[currentIndex]);
 		badgetextx.setFormat('VCR OSD Mono', 22, FlxColor.WHITE, CENTER, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(badgetextx);
 
-		characterName = new FlxText(630, 94, 622, charName[currentIndex]);
+		characterName = new FlxText(630, 94, 622, biosJSON.people[currentIndex]);
         characterName.setFormat(Paths.font("vcr.ttf"), 96, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		characterName.antialiasing = true;
 		characterName.borderSize = 4;
         add(characterName);
 
-		descriptionText = new FlxText(630, 247, 601, charDesc[currentIndex]);
+		descriptionText = new FlxText(630, 247, 601, biosJSON.descriptions[currentIndex]);
         descriptionText.setFormat(Paths.font("vcr.ttf"), 34, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		descriptionText.antialiasing = true;
 		descriptionText.borderSize = 2.5;
@@ -149,137 +126,17 @@ class BiosMenuState extends MusicBeatState {
 		var arrows = new FlxSprite(218, 30).loadGraphic(Paths.image('bios/assets/biosThing'));
 		add(arrows);
 
-		/*var textBG:FlxSprite = new FlxSprite(0, FlxG.height - 26).makeGraphic(FlxG.width, 26, 0xFF000000);
-		textBG.alpha = 0.6;
-		add(textBG);
-		discord = new FlxText(textBG.x, textBG.y + 4, FlxG.width, 'Press ENTER to join our discord server', 18);
-		discord.setFormat('VCR OSD Mono', 18, FlxColor.WHITE, RIGHT);
-		discord.borderSize = 2.5;
-		add(discord);*/
-
 		super.create();
 	}
 
-	function getbgc():Array<Array<String>>
-		{
-			#if MODS_ALLOWED
-			var firstArray:Array<String> = Mods.mergeAllTextsNamed('customBios/customBGColors.txt', Paths.getPreloadPath());
-			#else
-			var fullText:String = Assets.getText(Paths.customBiosTxt('customBGColors'));
-			var firstArray:Array<String> = fullText.split('\n');
-			#end
-			var swagGoodArray:Array<Array<String>> = [];
-	
-			for (i in firstArray)
-			{
-				swagGoodArray.push(i.split('--'));
-			}
-	
-			return swagGoodArray;
-		}
-
-		function getTxtLinks():Array<Array<String>>
-			{
-				#if MODS_ALLOWED
-				var firstArray:Array<String> = Mods.mergeAllTextsNamed('customBios/links.txt', Paths.getPreloadPath());
-				#else
-				var fullText:String = Assets.getText(Paths.customBiosTxt('links'));
-				var firstArray:Array<String> = fullText.split('\n');
-				#end
-				var swagGoodArray:Array<Array<String>> = [];
-		
-				for (i in firstArray)
-				{
-					swagGoodArray.push(i.split('--'));
-				}
-		
-				return swagGoodArray;
-			}
-
-	// insert functions
-	function characterNamesShit():Array<Array<String>>
-		{
-			var fullText:String = Assets.getText(Paths.customBiosTxt('characters'));
-	
-			var firstArray:Array<String> = fullText.split('\n');
-			var swagGoodArray:Array<Array<String>> = [];
-	
-			for (i in firstArray)
-			{
-				swagGoodArray.push(i.split('::'));
-			}
-	
-			return swagGoodArray;
-		}
-
-	function descNamesShit():Array<Array<String>>
-		{
-			var fullText:String = Assets.getText(Paths.customBiosTxt('descriptions'));
-		
-			var firstArray:Array<String> = fullText.split('\n');
-			var swagGoodArray:Array<Array<String>> = [];
-		
-			for (i in firstArray)
-			{
-				swagGoodArray.push(i.split('::'));
-			}
-		
-			return swagGoodArray;
-		}
-
-		function badgeImages():Array<Array<String>>
-			{
-				var fullText:String = Assets.getText(Paths.customBiosTxt('badgeImages'));
-			
-				var firstArray:Array<String> = fullText.split('\n');
-				var swagGoodArray:Array<Array<String>> = [];
-			
-				for (i in firstArray)
-				{
-					swagGoodArray.push(i.split('::'));
-				}
-			
-				return swagGoodArray;
-			}
-
-
-			function badgeTextShit():Array<Array<String>>
-				{
-					var fullText:String = Assets.getText(Paths.customBiosTxt('badgeText'));
-				
-					var firstArray:Array<String> = fullText.split('\n');
-					var swagGoodArray:Array<Array<String>> = [];
-				
-					for (i in firstArray)
-					{
-						swagGoodArray.push(i.split('::'));
-					}
-				
-					return swagGoodArray;
-				}
-
 	override function update(elapsed:Float) {
-		
-		/*hue += elapsed * 10;
-		if (hue > 360)
-			hue -= 360;
-
-		var color = FlxColor.fromHSB(Std.int(hue), 1, 1);
-		gradient.color = color;
-		background.color = color;*/
-
-		/*if (controls.ACCEPT) {
-			CoolUtil.browserLoad('https://discord.gg/PNcTpUTcKS');
-		}*/
-
-
 
 		if (ClientPrefs.data.autoResizeImg) {
 			imageSprite.setGraphicSize(518, 544);
 		}
 
 		if (controls.ACCEPT) {
-			CoolUtil.browserLoad(peopleLinks[currentIndex]);
+			CoolUtil.browserLoad(biosJSON.links[currentIndex]);
 		}
 
 		if (FlxG.keys.justPressed.UP || FlxG.keys.justPressed.W) 
@@ -287,39 +144,40 @@ class BiosMenuState extends MusicBeatState {
 				currentIndex--;
 				if (currentIndex < 0)
 				{
-					currentIndex = imagePath.length - 1;
+					currentIndex = biosJSON.imageLinks.length - 1;
 				}
 				remove(imageSprite);
-				imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image(imagePath[currentIndex]));
+				imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image(biosJSON.imageLinks[currentIndex]));
 				add(imageSprite);
 				FlxTween.tween(imageSprite, {x: 55, y: 101}, 0.1, {ease: FlxEase.quadInOut});
 				remove(badgeImg);
-				badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image(badgeimg[currentIndex]));
+				badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image(biosJSON.badgeImages[currentIndex]));
 				add(badgeImg);
-				descriptionText.text = charDesc[currentIndex];
-				characterName.text = charName[currentIndex];
-				badgetextx.text = badgeText[currentIndex];
+				descriptionText.text = biosJSON.descriptions[currentIndex];
+				characterName.text = biosJSON.people[currentIndex];
+				badgetextx.text = biosJSON.badgeText[currentIndex];
+				
 				FlxG.sound.play(Paths.sound('scrollMenu'));  
 	
 			}
 			else if (FlxG.keys.justPressed.DOWN || FlxG.keys.justPressed.S)
 			{
 				currentIndex++;
-				if (currentIndex >= imagePath.length)
+				if (currentIndex >= biosJSON.imageLinks.length)
 				{
 					currentIndex = 0;
 				}
 				remove(imageSprite);
-				imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image(imagePath[currentIndex]));
+				imageSprite = new FlxSprite(55, 99).loadGraphic(Paths.image(biosJSON.imageLinks[currentIndex]));
 				add(imageSprite);
 				FlxTween.tween(imageSprite, {x: 55, y: 101}, 0.1, {ease: FlxEase.quadInOut});
 				remove(badgeImg);
-				badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image(badgeimg[currentIndex]));
+				badgeImg = new FlxSprite(1086, 451).loadGraphic(Paths.image(biosJSON.badgeImages[currentIndex]));
 				add(badgeImg);
-				descriptionText.text = charDesc[currentIndex];
-				characterName.text = charName[currentIndex];  
-				badgetextx.text = badgeText[currentIndex];
-				FlxG.sound.play(Paths.sound('scrollMenu'));		
+				descriptionText.text = biosJSON.descriptions[currentIndex];
+				characterName.text = biosJSON.people[currentIndex];  
+				badgetextx.text = biosJSON.badgeText[currentIndex];
+				FlxG.sound.play(Paths.sound('scrollMenu'));	
 			}
 			if (controls.BACK)
 				{
@@ -331,10 +189,9 @@ class BiosMenuState extends MusicBeatState {
 						MusicBeatState.switchState(new FNFMainMenu());
 					}
 					else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-						MusicBeatState.switchState(new ProjectEngineMouse());
+						MusicBeatState.switchState(new UnfinishedWarning());
 					}
 				}
 		
 		super.update(elapsed);
-	}
-}
+}	}

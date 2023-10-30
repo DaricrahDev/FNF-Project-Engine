@@ -1,5 +1,6 @@
 package options;
 
+import states.UnfinishedWarn.UnfinishedWarning;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import states.MainMenuState;
@@ -44,6 +45,8 @@ class OptionsState extends MusicBeatState
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
+
+		FlxG.sound.playMusic(Paths.music('optionsMenu'), 1);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.screenCenter();
@@ -124,7 +127,7 @@ class OptionsState extends MusicBeatState
 				MusicBeatState.switchState(new FNFMainMenu());
 			}
 			else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-				MusicBeatState.switchState(new ProjectEngineMouse());
+				MusicBeatState.switchState(new UnfinishedWarning());
 			}
 		}
 		else if (controls.ACCEPT) openSelectedSubstate(options[curSelected]);

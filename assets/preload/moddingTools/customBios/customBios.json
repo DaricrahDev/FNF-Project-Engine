@@ -1,0 +1,53 @@
+{
+	"people": [
+		"DaricrahDev",
+		"QC",
+		"FoxLOID",
+		"Taurenado",
+		"Killshot",
+		"slosher"
+	],
+	"descriptions": [
+		"Main programmer, coded all of the features. I work on a lot of FNF Mods, i make cool stuff.",
+		"A great person that helped me making this engine, gave me ideas and made cool art for the logo! Thank you so much!",
+		"Made most of the textures you can see on the engine",
+		"Hello im an artist for this mod! nuh idk what to put here except im usually bored and i like to play games so if you want to play some games, hit me up",
+		"No description provided.",
+		"No description provided."
+	],
+	"links": [
+		"https://www.youtube.com/channel/UCIN9kMpVu9cFj0RIJ8NXDow",
+		"https://twitter.com/WVN84954413",
+		"https://twitter.com/FoxLOID_",
+		"null",
+		"null",
+		"null"
+	],
+	"badgeImages": [
+		"badge4",
+	 	"badge1", 
+	 	"badge4", 
+	 	"badge2", 
+		"badge3",
+		"badge3"
+	],
+	"imageLinks": [
+		"bios/mainDevs/daricrahdev",
+		"placeholders/noBiosImg",
+		"bios/mainDevs/foxloid",
+		"bios/mainDevs/dataurenado",
+		"placeholders/noBiosImg",
+		"placeholders/noBiosImg"
+	],
+	"badgeText": [
+		"Main Programmer",
+		"UI Artist",
+		"Main Artist",
+		"Artist",
+		"Programmer",
+		"Composer"
+	],
+	"backgroundSprite": "menuDesat",
+	"bgColor": "0xff0498d3",
+	"gradientColor": "0xff055d80"
+}

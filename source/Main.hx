@@ -1,5 +1,6 @@
 package;
 
+import states.TitleState;
 import flixel.graphics.FlxGraphic;
 
 import flixel.FlxGame;

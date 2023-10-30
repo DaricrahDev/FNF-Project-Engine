@@ -11,6 +11,12 @@ class ModConfig extends BaseOptionsMenu
 		title = 'Mod Preferences';
 		rpcTitle = 'Mod Preferences Menu'; //for Discord Rich Presence
 
+	var option:Option = new Option('Spooky Month Event',
+	"If enabled, enables the spooky month event.",
+	'spookymonth',
+	'bool');
+	addOption(option);
+
 		var option:Option = new Option('Oneshot Mod',
 			'If checked, enables the oneshot mod mode.',
 			'isOneshotMod',
@@ -43,14 +49,14 @@ class ModConfig extends BaseOptionsMenu
 	['Bios Menu', 'Credits Menu']);
 	addOption(option);
 
-	var option:Option = new Option('Spooky Month Event',
-	"If enabled, enables the spooky month event.",
-	'spookymonth',
+	var option:Option = new Option('Enable Freeplay Characters',
+	"[BETA]\nIf enabled, enables freeplay characters.",
+	'enablefreeplayChars',
 	'bool');
 	addOption(option);
 
-
 		super();
+	            
 	}
 
 	override function changeSelection(change:Int = 0)

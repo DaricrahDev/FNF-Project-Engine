@@ -1,5 +1,6 @@
 package states;
 
+import haxe.Json;
 import backend.Song;
 import backend.Highscore;
 import backend.WeekData;
@@ -25,13 +26,14 @@ class FNFMainMenu extends MusicBeatState
 	var menuItems:FlxTypedGroup<FlxSprite>;
 	private var camGame:FlxCamera;
 	private var camAchievement:FlxCamera;
-	
+
 	var optionShit:Array<String> = [
 		'story_mode',
 		'freeplay',
 		#if MODS_ALLOWED 'mods', #end
+		#if ACHIEVEMENTS_ALLOWED 'awards', #end
 		'credits',
-		//#if !switch 'donate', #end
+		#if !switch 'donate', #end
 		'options'
 	];
 
@@ -41,7 +43,7 @@ class FNFMainMenu extends MusicBeatState
 	var playSongName:Array<String> = [];
 
 	override function create()
-	{
+	{	
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
 		#end

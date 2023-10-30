@@ -1,5 +1,6 @@
 package backend;
 
+import states.TitleState;
 import flixel.util.FlxSave;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -11,11 +12,12 @@ class SaveVariables {
 	public var downScroll:Bool = false;
 	public var isOneshotMod:Bool = false;
 	public var beatTitle:Bool = false;
+	public var enablefreeplayChars:Bool = true;
 	public var middleScroll:Bool = false;
-	public var menuSong:String = 'Default';
 	public var opponentStrums:Bool = true;
 	public var showFPS:Bool = true;
 	public var flashing:Bool = true;
+	public var goreEnabled:Bool = true;
 	public var autoPause:Bool = true;
 	public var antialiasing:Bool = true;
 	//public var bgcolor:String = 'Purple (Default)';
@@ -96,14 +98,15 @@ class SaveVariables {
 class ClientPrefs {
 
 	public static var data:SaveVariables = null;
+	public static var enablefreeplayChars:Bool = true;
 	public static var defaultData:SaveVariables = null;
 	//public static var bgcolor:String = 'Purple (Default)';
-	public static var menuSong:String = 'Default';
 	public static var menuType:String = 'Project Engine';
 	public static var creditsType:String = "Bios Menu";
 	public static var autoResizeImg:Bool = true;
 	public static var beatTitle:Bool = false;
 	public static var spookymonth:Bool = false;
+	public static var goreEnabled:Bool = true;
 	public static var randomMessage:Bool = true;
 	public static var isOneshotMod:Bool = false;
 

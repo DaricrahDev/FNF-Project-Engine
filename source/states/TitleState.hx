@@ -1,5 +1,7 @@
 package states;
 
+import states.UnfinishedWarn.UnfinishedWarning;
+import states.MainMenuState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import backend.WeekData;
@@ -30,7 +32,6 @@ import sys.io.File;
 
 typedef TitleData =
 {
-
 	titlex:Float,
 	titley:Float,
 	startx:Float,
@@ -40,9 +41,17 @@ typedef TitleData =
 	backgroundSprite:String,
 	bpm:Int
 }
+typedef TitleShit =
+{
+	titleChars:Array<String>,
+	secondTitle:Array<String>,
+	titleLogoVisible:Bool
+}
 
 class TitleState extends MusicBeatState
 {
+	var titleCreditsStuff:TitleShit;
+
 	public static var muteKeys:Array<FlxKey> = [FlxKey.ZERO];
 	public static var volumeDownKeys:Array<FlxKey> = [FlxKey.NUMPADMINUS, FlxKey.MINUS];
 	public static var volumeUpKeys:Array<FlxKey> = [FlxKey.NUMPADPLUS, FlxKey.PLUS];
@@ -84,7 +93,7 @@ class TitleState extends MusicBeatState
 	public static var updateVersion:String = '';
 
 	override public function create():Void
-	{
+	{	
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
 
@@ -106,9 +115,11 @@ class TitleState extends MusicBeatState
 		customTitleMenu = FlxG.random.getObject(getCustomTitleTxt());
 		customAfterTitle = FlxG.random.getObject(getCustomAfterTitleTxt());
 
+		titleCreditsStuff = Json.parse(Paths.getTextFromFile('moddingTools/customMenus/customTitle.json'));
+
 		super.create();
 
-		FlxG.save.bind('funkin', CoolUtil.getSavePath());
+		FlxG.save.bind('ProjectTeam - FNF Project Engine', CoolUtil.getSavePath());
 
 		ClientPrefs.loadPrefs();
 
@@ -120,7 +131,7 @@ class TitleState extends MusicBeatState
 			http.onData = function (data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
-				var curVersion:String = MainMenuState.psychEngineVersion.trim();
+				var curVersion:String = Info.updateVersion.trim();
 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
 				if(updateVersion != curVersion) {
 					trace('versions arent matching!');
@@ -211,12 +222,7 @@ class TitleState extends MusicBeatState
 		if (!initialized)
 		{
 			if(FlxG.sound.music == null) {
-				if (ClientPrefs.data.menuSong == 'Default') {
-					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-				}
-				else if (ClientPrefs.data.menuSong == 'Bro') {
-					FlxG.sound.playMusic(Paths.music('broMenu'), 0);
-				}
+				FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 			}
 		}
 
@@ -515,7 +521,7 @@ class TitleState extends MusicBeatState
 							MusicBeatState.switchState(new FNFMainMenu());
 						}
 						else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-							MusicBeatState.switchState(new ProjectEngineMouse());
+							MusicBeatState.switchState(new UnfinishedWarning());
 						}
 					}
 					closedState = true;
@@ -653,19 +659,14 @@ class TitleState extends MusicBeatState
 			{
 				case 1:
 					//FlxG.sound.music.stop();
-					if (ClientPrefs.data.menuSong == 'Default') {
-						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-					}
-					else if (ClientPrefs.data.menuSong == 'Bro') {
-						FlxG.sound.playMusic(Paths.music('broMenu'), 0);
-					}
+					FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 					FlxG.sound.music.fadeIn(4, 0, 0.7);
 				case 2:
-					createCoolText([customTitleMenu[0], customTitleMenu[1], customTitleMenu[2], customTitleMenu[3]]);
+					createCoolText(titleCreditsStuff.titleChars);
 				// credTextShit.visible = true;
 				case 4:
-					addMoreText(customAfterTitle[0]);
-				// credTextShit.text += '\npresent...';
+					addMoreText(titleCreditsStuff.secondTitle[0]);
+				// NOTE: dont be an idiot and use the first string for anything else than the 'present' text
 				// credTextShit.addText();
 				case 5:
 					deleteCoolText();
@@ -676,7 +677,7 @@ class TitleState extends MusicBeatState
 					createCoolText(['Project Engine', 'by'], -40);
 				case 8:
 					addMoreText('project team', -40);
-					ngSpr.visible = true;
+					ngSpr.visible = titleCreditsStuff.titleLogoVisible;
 				// credTextShit.text += '\nNewgrounds';
 				case 9:
 					deleteCoolText();
@@ -697,13 +698,13 @@ class TitleState extends MusicBeatState
 				// credTextShit.text = "Friday";
 				// credTextShit.screenCenter();
 				case 14:
-					addMoreText(customAfterTitle[1]);
+					addMoreText(titleCreditsStuff.secondTitle[1]);
 				// credTextShit.visible = true;
 				case 15:
-					addMoreText(customAfterTitle[2]);
+					addMoreText(titleCreditsStuff.secondTitle[2]);
 				// credTextShit.text += '\nNight';
 				case 16:
-					addMoreText(customAfterTitle[3]); // credTextShit.text += '\nFunkin';
+					addMoreText(titleCreditsStuff.secondTitle[3]); // credTextShit.text += '\nFunkin';
 
 				case 17:
 					skipIntro();
@@ -741,13 +742,7 @@ class TitleState extends MusicBeatState
 						FlxG.camera.flash(FlxColor.WHITE, 2);
 						skippedIntro = true;
 						playJingle = false;
-
-						if (ClientPrefs.data.menuSong == 'Default') {
-							FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						}
-						else if (ClientPrefs.data.menuSong == 'Bro') {
-							FlxG.sound.playMusic(Paths.music('broMenu'), 0);
-						}
+						FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
 						FlxG.sound.music.fadeIn(4, 0, 0.7);
 						return;
 				}
@@ -769,12 +764,7 @@ class TitleState extends MusicBeatState
 					remove(credGroup);
 					FlxG.camera.flash(FlxColor.WHITE, 3);
 					sound.onComplete = function() {
-						if (ClientPrefs.data.menuSong == 'Default') {
 							FlxG.sound.playMusic(Paths.music('freakyMenu'), 0);
-						}
-						else if (ClientPrefs.data.menuSong == 'Bro') {
-							FlxG.sound.playMusic(Paths.music('broMenu'), 0);
-						}
 						FlxG.sound.music.fadeIn(4, 0, 0.7);
 						transitioning = false;
 					};

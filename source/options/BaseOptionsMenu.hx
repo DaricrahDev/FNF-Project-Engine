@@ -24,6 +24,7 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 	var bg:FlxSprite;
 	var gradient:FlxSprite;
+	var colorTween:FlxTween;
 
 	public function new()
 	{
@@ -123,13 +124,25 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	override function update(elapsed:Float)
 	{
 		if (ClientPrefs.data.spookymonth) {
-			bg.color = 0xffe07902;
+			var intendedColor:Int;
+			intendedColor = 0xFFFF8A05;
+			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
+				onComplete: function(twn:FlxTween) {
+					colorTween = null;
+				}
+			});
 			gradient.visible = false;
 		}
 		else
 		{
-			bg.color = 0xff0c77b6;
-			gradient.visible = true;
+			var intendedColor:Int;
+			intendedColor = 0xff0c77b6;
+			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
+				onComplete: function(twn:FlxTween) {
+					colorTween = null;
+					gradient.visible = true;
+				}
+			});
 		}
 
 		if (controls.UI_UP_P)

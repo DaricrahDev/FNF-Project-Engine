@@ -58,6 +58,8 @@ class ProjectEngineMouse extends MusicBeatState
 
 	var hue:Float = 0;
 
+	var decorations:FlxSprite;
+
 	override function create()
 	{
 		#if MODS_ALLOWED
@@ -158,6 +160,14 @@ class ProjectEngineMouse extends MusicBeatState
 			menuItem.updateHitbox();
 		}*/
 
+		if (ClientPrefs.data.goreEnabled) {
+			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween_gore'));
+		}
+		else
+		{
+			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween'));
+		}
+
 		
 		camGame.zoom = 3;
 		FlxTween.tween(camGame, {zoom: 1}, 1.1, {ease: FlxEase.expoInOut});
@@ -167,18 +177,6 @@ class ProjectEngineMouse extends MusicBeatState
 
 		credits = new FlxSprite(935, 553).loadGraphic(Paths.image('mic-d-up/credits'));
 		add(credits);
-
-		darkBG = new FlxSprite(-8, -4).makeGraphic(1504, 48, FlxColor.BLACK);
-		darkBG.visible = ClientPrefs.data.randomMessage;
-		darkBG.alpha = 0.5;
-		add(darkBG);
-
-		featureText = new FlxText(0, 0, 1244, "", 35);
-		featureText.setFormat('VCR OSD Mono', 35, FlxColor.WHITE, CENTER);
-		featureText.screenCenter();
-		featureText.y -= 339;
-		featureText.visible = ClientPrefs.data.randomMessage;
-		add(featureText);
 
 		FlxG.camera.follow(camFollow, null, 0);
 
@@ -214,6 +212,18 @@ class ProjectEngineMouse extends MusicBeatState
 		options.animation.play('idle');
 		add(options);
 
+		darkBG = new FlxSprite(-8, -4).makeGraphic(1504, 48, FlxColor.BLACK);
+		darkBG.visible = ClientPrefs.data.randomMessage;
+		darkBG.alpha = 0.5;
+		add(darkBG);
+
+		featureText = new FlxText(0, 0, 1244, "", 35);
+		featureText.setFormat('VCR OSD Mono', 35, FlxColor.WHITE, CENTER);
+		featureText.screenCenter();
+		featureText.y -= 339;
+		featureText.visible = ClientPrefs.data.randomMessage;
+		add(featureText);
+
 		switch (FlxG.random.int(0, 5)) {
 
 			case 0:
@@ -226,6 +236,23 @@ class ProjectEngineMouse extends MusicBeatState
 				featureText.text = randomShit[3];
 			case 4:
 				featureText.text = randomShit[4];
+		}
+
+		if (ClientPrefs.data.spookymonth) {
+			mods.loadGraphic(Paths.image('mic-d-up/spookyEvent'));
+			decorations.visible = true;
+
+			featureText.text = "It's spooky month!";
+		}
+
+		if (ClientPrefs.data.spookymonth) {
+			bg.color = 0xff414141;
+			gradient.visible = false;
+		}
+		else
+		{
+			bg.color = CoolUtil.colorFromString(customBGColor[0]);
+			gradient.visible = true;
 		}
 
 		// NG.core.calls.event.logEvent('swag').send();

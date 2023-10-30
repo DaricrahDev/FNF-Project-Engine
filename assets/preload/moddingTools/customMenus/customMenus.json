@@ -1,0 +1,16 @@
+{
+	"backgroundSprite": "menuDesat",
+	"bgColor": "0xff7e0097",
+	"gradientSprite": "gradient",
+	"gradientColor": "",
+	"oneshotSongName": "",
+	"checkersEnabled": true,
+	"randomTexts": [
+		"This is a random text lol", 
+		"hi", 
+		"spooky month yeah", 
+		"[loading random text]", 
+		"best engine for modding", 
+		"[insert text]"
+	]
+}

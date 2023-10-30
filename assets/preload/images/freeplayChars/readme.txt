@@ -1,0 +1,1 @@
+just add an image with the song name to add a freeplay character

@@ -26,6 +26,7 @@ class FlxSoundTray extends Sprite
 	 * Because reading any data from DisplayObject is insanely expensive in hxcpp, keep track of whether we need to update it or not.
 	 */
 	public var active:Bool;
+	var text:TextField = new TextField();
 
 	/**
 	 * Helps us auto-hide the sound tray after a volume change.
@@ -68,7 +69,6 @@ class FlxSoundTray extends Sprite
 		screenCenter();
 		addChild(tmp);
 
-		var text:TextField = new TextField();
 		text.width = tmp.width;
 		text.height = tmp.height;
 		text.multiline = true;

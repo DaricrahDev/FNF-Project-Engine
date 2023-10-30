@@ -21,6 +21,10 @@ class WebWarning extends MusicBeatState {
 
 	override function update(elapsed:Float) {
 		
+		if (controls.ACCEPT) {
+			CoolUtil.browserLoad(Info.gamebananaLink);
+		}
+
 		super.update(elapsed);
 	}
 }

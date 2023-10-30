@@ -1,5 +1,7 @@
 package states;
 
+import flixel.FlxState;
+import states.TitleState;
 import backend.Song;
 import backend.Highscore;
 import flixel.addons.display.FlxGridOverlay;
@@ -27,6 +29,16 @@ import sys.FileSystem;
 
 import openfl.Assets;
 
+typedef MenuData =
+{
+	backgroundSprite:String,
+	bgColor:String,
+	gradientSprite:String,
+	gradientColor:String,
+	oneshotSongName:String,
+	checkersEnabled:Bool,
+	randomTexts:Array<String>
+}
 class MainMenuState extends MusicBeatState
 {
 	public static var psychEngineVersion:String = Info.updateVersionAlt; //This is also used for Discord RPC
@@ -56,18 +68,21 @@ class MainMenuState extends MusicBeatState
 	var mods:FlxSprite;
 	var credits:FlxSprite;
 
-	var randomShit:Array<String> = [];
-	var playSongName:Array<String> = []; // used when the play thing is enabled for oneshots
-	var customBGColor:Array<String> = []; // custom bg color hehe
-
-	var hue:Float = 0;
 	var intendedColor:Int;
 	var colorTween:FlxTween;
+
+	var decorations:FlxSprite;
+
+	var menuJSON:MenuData;
 
 	//var featureIsClickable:Bool = false;
 
 	override function create()
 	{
+		FlxG.sound.playMusic(Paths.music('freakyMenu'), FlxG.sound.volume);
+
+		menuJSON = Json.parse(Paths.getTextFromFile('moddingTools/customMenus/customMenus.json'));
+
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
 		#end
@@ -77,10 +92,6 @@ class MainMenuState extends MusicBeatState
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-
-		randomShit = FlxG.random.getObject(getRandomShit());
-		playSongName = FlxG.random.getObject(getSongName());
-		customBGColor = FlxG.random.getObject(getBackgroundColor());
 
 		camGame = new FlxCamera();
 		camAchievement = new FlxCamera();
@@ -98,25 +109,57 @@ class MainMenuState extends MusicBeatState
 		persistentUpdate = persistentDraw = true;
 
 		var yScroll:Float = Math.max(0.25 - (0.05 * (optionShit.length - 4)), 0.1);
-		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg = new FlxSprite();
 		bg.antialiasing = ClientPrefs.data.antialiasing;
 		bg.scrollFactor.set(0, yScroll);
 		bg.setGraphicSize(Std.int(bg.width * 1.175));
 		bg.updateHitbox();
-		bg.screenCenter();
-		bg.color = Info.defaultBGColor;
 		add(bg);
 		
-		gradient = new FlxSprite().loadGraphic(Paths.image('gradient_white'));
-		gradient.color = CoolUtil.colorFromString(customBGColor[1]);
+		gradient = new FlxSprite();
+		gradient.color = CoolUtil.colorFromString(menuJSON.gradientColor);
 		gradient.screenCenter();
 		gradient.x += 20;
 		add(gradient);
+
+		// lot of important shit
+		if (menuJSON.backgroundSprite != null && menuJSON.backgroundSprite.length > 0 && menuJSON.backgroundSprite != "none") {
+			bg.loadGraphic(Paths.image(menuJSON.backgroundSprite));
+			bg.screenCenter();
+		}
+		else
+		{
+			bg.loadGraphic(Paths.image('placeholders/noMenuImg'));
+			bg.screenCenter();
+		}
+
+		if (menuJSON.gradientSprite != null && menuJSON.gradientSprite.length > 0 && menuJSON.gradientSprite != "none") {
+			gradient.loadGraphic(Paths.image(menuJSON.gradientSprite));
+			gradient.screenCenter();
+		}
+		else
+		{
+			gradient.loadGraphic(Paths.image('placeholders/invisibleImg'));
+			gradient.screenCenter();
+		}
+
+		if (menuJSON.bgColor != null && menuJSON.bgColor.length > 0 && menuJSON.bgColor != "none") {
+			bg.color = CoolUtil.colorFromString(menuJSON.bgColor);
+		}
+		else
+		{
+			bg.color = FlxColor.TRANSPARENT;
+		}
+
+		if (menuJSON.bgColor != "white") {
+			bg.color = 0xfffffff;
+		}
 
 		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));
 		grid.velocity.set(30, 30);
 		grid.scale.set(1.3, 1.3);
 		grid.alpha = 0;
+		grid.visible = menuJSON.checkersEnabled;
 		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
 		add(grid);
 
@@ -170,6 +213,19 @@ class MainMenuState extends MusicBeatState
 		camGame.zoom = 3;
 		FlxTween.tween(camGame, {zoom: 1}, 1.1, {ease: FlxEase.expoInOut});
 
+		if (ClientPrefs.data.goreEnabled) {
+			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween_gore'));
+		}
+		else
+		{
+			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween'));
+		}
+			
+		decorations.screenCenter(XY);
+		decorations.scale.set(1.1, 1.1);
+		decorations.visible = false;
+		add(decorations);
+
 		mods = new FlxSprite(935, -121).loadGraphic(Paths.image('mic-d-up/mods'));
 		add(mods);
 
@@ -193,12 +249,12 @@ class MainMenuState extends MusicBeatState
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, Info.engineNameWversion, 12);
 		versionShit.scrollFactor.set();
 		versionShit.antialiasing = true;
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat(Info.defaultFont, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 24, 0, Info.updateName, 12);
 		versionShit.scrollFactor.set();
 		versionShit.antialiasing = true;
-		versionShit.setFormat("VCR OSD Mono", 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		versionShit.setFormat(Info.defaultFont, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
 
 		//featureIsClickable = false;
@@ -206,22 +262,17 @@ class MainMenuState extends MusicBeatState
 		switch (FlxG.random.int(0, 5)) {
 
 			case 0:
-				featureText.text = randomShit[0];
+				featureText.text = menuJSON.randomTexts[0];
 			case 1:
-				featureText.text = randomShit[1];
+				featureText.text = menuJSON.randomTexts[1];
 			case 2:
-				featureText.text = randomShit[2];
+				featureText.text = menuJSON.randomTexts[2];
 			case 3:
-				featureText.text = randomShit[3];
+				featureText.text = menuJSON.randomTexts[3];
 			case 4:
-				featureText.text = randomShit[4];
+				featureText.text = menuJSON.randomTexts[4];
 			case 5:	
-				featureText.text = randomShit[5];
-		}
-
-		if (ClientPrefs.data.spookymonth) {
-			featureText.text = "spooky month";
-			featureText.color = 0xffe07902;
+				featureText.text = menuJSON.randomTexts[5];
 		}
 
 		/*if (ClientPrefs.data.isOneshotMod) {
@@ -232,76 +283,27 @@ class MainMenuState extends MusicBeatState
 
 		// NG.core.calls.event.logEvent('swag').send();
 
+		if (ClientPrefs.data.spookymonth) {
+			decorations.visible = true;
+			featureText.text = "It's spooky month!";
+		}
+
 		changeItem();
 
 		super.create();
 	}
 
-	function getRandomShit():Array<Array<String>>
-		{
-			#if MODS_ALLOWED
-			var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/randomMenuText.txt', Paths.getPreloadPath());
-			#else
-			var fullText:String = Assets.getText(Paths.customMenusTxt('randomMenuText'));
-			var firstArray:Array<String> = fullText.split('\n');
-			#end
-			var swagGoodArray:Array<Array<String>> = [];
-	
-			for (i in firstArray)
-			{
-				swagGoodArray.push(i.split('--'));
-			}
-	
-			return swagGoodArray;
-		}
-
-		function getSongName():Array<Array<String>> // ADD ONLY ONE SONG!!!!
-			{
-				#if MODS_ALLOWED
-				var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/oneshotSongName.txt', Paths.getPreloadPath());
-				#else
-				var fullText:String = Assets.getText(Paths.customMenusTxt('oneshotSongName'));
-				var firstArray:Array<String> = fullText.split('\n');
-				#end
-				var swagGoodArray:Array<Array<String>> = [];
-		
-				for (i in firstArray)
-				{
-					swagGoodArray.push(i.split('--'));
-				}
-		
-				return swagGoodArray;
-			}
-
-			function getBackgroundColor():Array<Array<String>> // ADD ONLY ONE SONG!!!! //getBackgroundColor
-				{
-					#if MODS_ALLOWED
-					var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/customBGColors.txt', Paths.getPreloadPath());
-					#else
-					var fullText:String = Assets.getText(Paths.customMenusTxt('customBGColors'));
-					var firstArray:Array<String> = fullText.split('\n');
-					#end
-					var swagGoodArray:Array<Array<String>> = [];
-			
-					for (i in firstArray)
-					{
-						swagGoodArray.push(i.split('--'));
-					}
-			
-					return swagGoodArray;
-				}
-
 	var selectedSomethin:Bool = false;
 
 	override function update(elapsed:Float)
-	{
+	{		
 		if (ClientPrefs.data.spookymonth) {
-			bg.color = 0xff414141;
+			bg.color = 0xff292649;
 			gradient.visible = false;
 		}
 		else
 		{
-			bg.color = CoolUtil.colorFromString(customBGColor[0]);
+			bg.color = CoolUtil.colorFromString(menuJSON.bgColor);
 			gradient.visible = true;
 		}
 
@@ -382,7 +384,6 @@ class MainMenuState extends MusicBeatState
 	
 				if (FlxG.mouse.justPressed)
 				{
-					FlxG.sound.play(Paths.sound('confirmMenu'));
 					MusicBeatState.switchState(new ModsMenuState());
 				}
 			}
@@ -397,13 +398,13 @@ class MainMenuState extends MusicBeatState
 	
 				if (FlxG.mouse.justPressed)
 				{
-					FlxG.sound.play(Paths.sound('confirmMenu'));
-					if (ClientPrefs.data.creditsType == 'Bios Menu') {
-						MusicBeatState.switchState(new BiosMenuState());
-					}
-					else if (ClientPrefs.data.creditsType == 'Credits Menu') {
-						MusicBeatState.switchState(new CreditsState());
-					}
+						if (ClientPrefs.data.creditsType == 'Bios Menu') {
+							MusicBeatState.switchState(new BiosMenuState());
+						}
+						else if (ClientPrefs.data.creditsType == 'Credits Menu') {
+							MusicBeatState.switchState(new CreditsState());
+						}
+					//FlxG.sound.play(Paths.sound('confirmMenu'));
 				}
 			}
 			else
@@ -471,7 +472,7 @@ class MainMenuState extends MusicBeatState
 								{
 									case 'story_mode':
 										if (ClientPrefs.data.isOneshotMod) {
-											var songLowercase:String = Paths.formatToSongPath(playSongName[0]);
+											var songLowercase:String = Paths.formatToSongPath(menuJSON.oneshotSongName);
 											var poop:String = Highscore.formatSongButBetter(songLowercase, 'hard');
 
 										PlayState.SONG = Song.loadFromJson(poop, songLowercase);
@@ -495,7 +496,7 @@ class MainMenuState extends MusicBeatState
 										//MusicBeatState.switchState(new CreditsState());
 										
 									case 'options':
-										LoadingState.loadAndSwitchState(new OptionsState());
+										MusicBeatState.switchState(new OptionsState());
 										OptionsState.onPlayState = false;
 										if (PlayState.SONG != null)
 										{
