@@ -35,7 +35,6 @@ jobs:
           sudo apt-get install libvlc-dev
           sudo apt-get install libvlccore-dev
           haxelib setup ~/haxelib
-          haxelib remove hxCodec
           haxelib install hxCodec 2.5.1
           haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
@@ -65,6 +64,7 @@ jobs:
           haxelib setup C:/haxelib
           haxelib install hxcpp > /dev/null --quiet
           haxelib install hmm --quiet
+          haxelib install hxCodec 2.5.1
           haxelib run hmm install
         shell: cmd
       - name: Create Version Tag
