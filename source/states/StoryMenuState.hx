@@ -68,6 +68,12 @@ class StoryMenuState extends MusicBeatState
 		var bgYellow:FlxSprite = new FlxSprite(0, 56).makeGraphic(FlxG.width, 386, 0xFFF9CF51);
 		bgSprite = new FlxSprite(0, 56);
 
+		switch (ClientPrefs.data.languages) {
+			case 'Español':
+				scoreText.text = "PUNTUACIÓN: 49324858";
+				rankText.text = "RANGO: BUENO";
+		}
+
 		grpWeekText = new FlxTypedGroup<MenuItem>();
 		add(grpWeekText);
 

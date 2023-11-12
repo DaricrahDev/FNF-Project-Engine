@@ -45,13 +45,14 @@ class CreditsState extends MusicBeatState
 
 		var defaultList:Array<Array<String>> = [ //Name - Icon name - Description - Link - BG Color
 			['Project Engine Team'],
-			['DaricrahDev',		'daricrahdev',		'Main Programmer, made some concepts and textures',								'https://twitter.com/Daricrah',	'FDE870'],
-			['Quixotic Critter',				'qc',			'Made the Project Engine logo and other textures',							'https://twitter.com/WVN84954413',		'FF9898'],
-			['DaTaurenado',				'taurenado',			'Made the concept for the bios menu and some textures too',							'null',		'00FF5C'],
-			['FoxLOID',				'foxloid',			'Main Artist/Animator and helped with some .lua scripts',							'https://twitter.com/FoxLOID_',		'41B5FF'],
+			['DaricrahDev',		'daricrahdev',		'Main Programmer, made some concepts and textures.',								'https://twitter.com/Daricrah',	'FDE870'],
+			['Quixotic Critter',				'qc',			'Made the Project Engine logo and other textures.',							'https://twitter.com/WVN84954413',		'FF9898'],
+			['DaTaurenado',				'taurenado',			'Made the concept for the bios menu and some textures too.',							'null',		'00FF5C'],
+			['Barbara Oficial',				'barbaraOficial',			'Programmer, helped me with the language system.',							'https://twitter.com/Barbara_Origami',		'D00055'],
 			[''],
 			['Engine special thanks'],
-			['Project Engine Community',		'discord',		'Posted ideas/concepts and gave me some feedback and more cool stuff...',								'https://twitter.com/Daricrah',	'5165F6'],
+			['Project Engine Community',		'discord',		'Posted ideas/concepts and gave me some feedback and more cool stuff...',								'https://discord.gg/PNcTpUTcKS',	'5165F6'],
+			['FoxLOID',				'foxloid',			'Main Artist/Animator and helped with some .lua scripts.',							'https://twitter.com/FoxLOID_',		'41B5FF'],
 		];
 		
 		for(i in defaultList) {

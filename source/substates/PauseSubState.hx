@@ -21,6 +21,7 @@ class PauseSubState extends MusicBeatSubstate
 
 	var menuItems:Array<String> = [];
 	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit to menu'];
+	var menuItemsEsp:Array<String> = ['Continuar', 'Reiniciar canción', 'Cambiar dificultad', 'Opciones', 'Salir al menú'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 
@@ -36,7 +37,7 @@ class PauseSubState extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		super();
-		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty'); //No need to change difficulty if there is only one!
+		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty') && menuItemsEsp.remove('Cambiar dificultad'); //No need to change difficulty if there is only one!
 
 		if(PlayState.chartingMode)
 		{
@@ -47,18 +48,27 @@ class PauseSubState extends MusicBeatSubstate
 			{
 				num = 1;
 				menuItemsOG.insert(3, 'Skip Time');
+				if (ClientPrefs.data.languages == 'Español')
+					menuItemsEsp.insert(3, 'Saltar tiempo');
 			}
-			menuItemsOG.insert(3 + num, 'End Song');
-			menuItemsOG.insert(4 + num, 'Toggle Practice Mode');
-			menuItemsOG.insert(5 + num, 'Toggle Botplay');
+			if (ClientPrefs.data.languages == 'Español') {
+				menuItemsEsp.insert(3 + num, 'Terminar Canción');
+				menuItemsEsp.insert(4 + num, 'Activar modo práctica');
+				menuItemsEsp.insert(5 + num, 'Activar Botplay');
+			}
+			else if (ClientPrefs.data.languages == 'English') {
+				menuItemsOG.insert(3 + num, 'End Song');
+				menuItemsOG.insert(4 + num, 'Toggle Practice Mode');
+				menuItemsOG.insert(5 + num, 'Toggle Botplay');
+			}
 		}
 		menuItems = menuItemsOG;
+		if (ClientPrefs.data.languages == 'Español') menuItems = menuItemsEsp;
 
 		for (i in 0...Difficulty.list.length) {
 			var diff:String = Difficulty.getString(i);
 			difficultyChoices.push(diff);
 		}
-		difficultyChoices.push('BACK');
 
 
 		pauseMusic = new FlxSound();
@@ -130,16 +140,23 @@ class PauseSubState extends MusicBeatSubstate
 
 		regenMenu();
 		cameras = [FlxG.cameras.list[FlxG.cameras.list.length - 1]];
+
+		switch (ClientPrefs.data.languages) {
+			case 'Español':
+				blueballedTxt.text = "Muertes: " + PlayState.deathCounter;
+				blueballedTxt.x = FlxG.width - (blueballedTxt.width + 10);
+				practiceText.text = "MODO PRÁCTICA";
+				chartingText.text = "MODO CHARTING";
+				difficultyChoices.push('VOLVER');
+			case 'English':
+				difficultyChoices.push('BACK');	
+		}
 	}
 
 	var holdTime:Float = 0;
 	var cantUnpause:Float = 0.1;
 	override function update(elapsed:Float)
 	{
-		if (ClientPrefs.data.isOneshotMod) {
-			levelDifficulty.text = "ONESHOT";
-		}
-
 		cantUnpause -= elapsed;
 		if (pauseMusic.volume < 0.5)
 			pauseMusic.volume += 0.01 * elapsed;
@@ -208,11 +225,41 @@ class PauseSubState extends MusicBeatSubstate
 				}
 
 				menuItems = menuItemsOG;
+				if (ClientPrefs.data.languages == 'Español') menuItems = menuItemsEsp;
+
 				regenMenu();
 			}
 
 			switch (daSelected)
 			{
+				case 'Continuar':
+					close();
+
+				case 'Reiniciar canción':
+					restartSong();
+
+				case 'Cambiar dificultad':
+					menuItems = difficultyChoices;
+					deleteSkipTimeText();
+					regenMenu();
+
+				case 'Activar modo práctica':
+					PlayState.instance.practiceMode = !PlayState.instance.practiceMode;
+					PlayState.changedDifficulty = true;
+					practiceText.visible = PlayState.instance.practiceMode;	
+
+					case 'Opciones':
+						PlayState.instance.paused = true; // For lua
+						PlayState.instance.vocals.volume = 0;
+						MusicBeatState.switchState(new OptionsState());
+						if(ClientPrefs.data.pauseMusic != 'None')
+						{
+							FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), pauseMusic.volume);
+							FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.8);
+							FlxG.sound.music.time = pauseMusic.time;
+						}
+						OptionsState.onPlayState = true;	
+
 				case "Resume":
 					close();
 				case 'Change Difficulty':
@@ -299,6 +346,37 @@ class PauseSubState extends MusicBeatSubstate
 						PlayState.chartingMode = false;
 						FlxG.camera.followLerp = 0;
 					}
+					case "Salir al menú":
+						if (ClientPrefs.data.isOneshotMod) {
+							#if desktop DiscordClient.resetClientID(); #end
+							PlayState.deathCounter = 0;
+							PlayState.seenCutscene = false;
+							if (ClientPrefs.data.menuType == 'Project Engine') {
+								MusicBeatState.switchState(new MainMenuState());
+							}
+							else if (ClientPrefs.data.menuType == 'FNF') {
+								MusicBeatState.switchState(new FNFMainMenu());
+							}
+	
+							PlayState.cancelMusicFadeTween();
+							FlxG.sound.playMusic(Paths.music('freakyMenu'));
+							PlayState.changedDifficulty = false;
+							PlayState.chartingMode = false;
+							FlxG.camera.followLerp = 0;
+						}
+						else {
+							Mods.loadTopMod();
+							if(PlayState.isStoryMode) {
+								MusicBeatState.switchState(new StoryMenuState());
+							} else {
+								MusicBeatState.switchState(new FreeplayState());
+							}
+							PlayState.cancelMusicFadeTween();
+							FlxG.sound.playMusic(Paths.music('freakyMenu'));
+							PlayState.changedDifficulty = false;
+							PlayState.chartingMode = false;
+							FlxG.camera.followLerp = 0;
+						}
 			}
 		}
 	}

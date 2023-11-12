@@ -15,6 +15,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		title = 'Visuals and UI';
 		rpcTitle = 'Visuals & UI Settings Menu'; //for Discord Rich Presence
 
+		if (ClientPrefs.data.languages == 'Español')
+			title = 'Visuales y UI';
+			rpcTitle = 'Menú de Visuales y UI';
+
 		// for note skins
 		notes = new FlxTypedGroup<StrumNote>();
 		for (i in 0...Note.colArray.length)
@@ -145,6 +149,13 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool');
 		addOption(option);
 		#end
+
+		var option:Option = new Option('Language:',
+		"Pretty self explanatory, isnt it?",
+		'languages',
+		'string',
+		['English', 'Español']);
+		addOption(option);
 
 		var option:Option = new Option('Combo Stacking',
 			"If unchecked, Ratings and Combo won't stack, saving on System Memory and making them easier to read",

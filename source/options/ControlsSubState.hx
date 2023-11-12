@@ -46,6 +46,7 @@ class ControlsSubState extends MusicBeatSubstate
 	var curOptions:Array<Int>;
 	var curOptionsValid:Array<Int>;
 	static var defaultKey:String = 'Reset to Default Keys';
+	static var defaultKeyEsp:String = 'Restablecer Controles';
 
 	var bg:FlxSprite;
 	var grpDisplay:FlxTypedGroup<Alphabet>;
@@ -138,7 +139,8 @@ class ControlsSubState extends MusicBeatSubstate
 				if(option.length > 1)
 				{
 					var isCentered:Bool = (option.length < 3);
-					var isDefaultKey:Bool = (option[1] == defaultKey);
+					var isDefaultKey:Bool = (option[1] == defaultKey); 
+					if (ClientPrefs.data.languages == 'Español') var isDefaultKey:Bool = (option[1] == defaultKey);
 					var isDisplayKey:Bool = (isCentered && !isDefaultKey);
 
 					var text:Alphabet = new Alphabet(200, 300, option[1], !isDisplayKey);
@@ -312,6 +314,14 @@ class ControlsSubState extends MusicBeatSubstate
 					holdingEsc = 0;
 					ClientPrefs.toggleVolumeKeys(false);
 					FlxG.sound.play(Paths.sound('scrollMenu'));
+
+					switch (ClientPrefs.data.languages) {
+						
+						case 'Español':
+							bindingText2.text = "Presiona ESC para salir\nMantén BKSP para Eliminar";
+							bindingText.text = "Modificando " + options[curOptions[curSelected]][3];
+					}
+
 				}
 				else
 				{

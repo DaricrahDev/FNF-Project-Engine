@@ -90,6 +90,19 @@ class PlayState extends MusicBeatState
 		['Sick!', 1], //From 90% to 99%
 		['Perfect!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
+	
+	public static var ratingStuffESP:Array<Dynamic> = [
+		['Basura', 0.2], //From 0% to 19%
+		['Mierda', 0.4], //From 20% to 39%
+		['Malo', 0.5], //From 40% to 49%
+		['¿Enserio?', 0.6], //From 50% to 59%
+		['Nah', 0.69], //From 60% to 68%
+		['Aceptable', 0.7], //69%
+		['Bien', 0.8], //From 70% to 79%
+		['Excelente', 0.9], //From 80% to 89%
+		['¡Increíble!', 1], //From 90% to 99%
+		['¡¡Perfecto!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+	];
 
 	//event variables
 	private var isCameraOnForcedPos:Bool = false;
@@ -529,6 +542,7 @@ class PlayState extends MusicBeatState
 		scoreTxt.scrollFactor.set();
 		scoreTxt.borderSize = 1.25;
 		scoreTxt.visible = !ClientPrefs.data.hideHud;
+		scoreTxt.antialiasing = true;
 		add(scoreTxt);
 
 		botplayTxt = new FlxText(400, timeBar.y + 55, FlxG.width - 800, "BOTPLAY", 32);
@@ -1050,15 +1064,24 @@ class PlayState extends MusicBeatState
 	public function updateScore(miss:Bool = false)
 	{
 		var str:String = ratingName;
+		var strESP:String = ratingNameESP;
 		if(totalPlayed != 0)
 		{
 			var percent:Float = CoolUtil.floorDecimal(ratingPercent * 100, 2);
 			str += ' ($percent%) - $ratingFC';
 		}
-
+        switch (ClientPrefs.data.languages){
+         
+         case 'English':
 		scoreTxt.text = 'Score: ' + songScore
 		+ ' | Misses: ' + songMisses
 		+ ' | Rating: ' + str;
+		
+		case 'Español':
+		scoreTxt.text = 'Puntuación: ' + songScore
+         + ' | Fallos: ' + songMisses
+         + ' | Clasificación: ' + strESP;
+		}
 
 		if(ClientPrefs.data.scoreZoom && !miss && !cpuControlled)
 		{
@@ -3094,6 +3117,7 @@ class PlayState extends MusicBeatState
 	}
 
 	public var ratingName:String = '?';
+	public var ratingNameESP:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
 	public function RecalculateRating(badHit:Bool = false) {
@@ -3121,12 +3145,22 @@ class PlayState extends MusicBeatState
 							ratingName = ratingStuff[i][0];
 							break;
 						}
+				// Rating Name Spanish
+				ratingNameESP = ratingStuffESP[ratingStuffESP.length-1][0]; //Uses last string
+				if(ratingPercent < 1)
+					for (i in 0...ratingStuffESP.length-1)
+						if(ratingPercent < ratingStuffESP[i][1])
+						{
+							ratingNameESP = ratingStuffESP[i][0];
+							break;
+						}
 			}
 			fullComboFunction();
 		}
 		updateScore(badHit); // score will only update after rating is calculated, if it's a badHit, it shouldn't bounce -Ghost
 		setOnLuas('rating', ratingPercent);
 		setOnLuas('ratingName', ratingName);
+		setOnLuas('ratingNameESP', ratingNameESP);
 		setOnLuas('ratingFC', ratingFC);
 	}
 

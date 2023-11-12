@@ -175,12 +175,18 @@ class FreeplayState extends MusicBeatState
 		var leText:String = "Press CTRL to open the Gameplay Changers Menu / Press RESET to Reset your Score and Accuracy.";
 		var size:Int = 18;
 		#end
-		var text:FlxText = new FlxText(textBG.x, textBG.y + 4, FlxG.width, leText, size);
-		text.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, RIGHT);
-		text.scrollFactor.set();
-		add(text);
+		var downText:FlxText = new FlxText(textBG.x, textBG.y + 4, FlxG.width, leText, size);
+		downText.setFormat(Paths.font("vcr.ttf"), size, FlxColor.WHITE, RIGHT);
+		downText.scrollFactor.set();
+		add(downText);
 		
 		updateTexts();
+
+		switch (ClientPrefs.data.languages) {
+			case 'Español':
+				downText.text = "Presiona CONTROL para abrir los modificadores de Gameplay / Presiona RESET para borrar tu puntuación.";
+		}
+
 		super.create();
 	}
 
@@ -243,6 +249,9 @@ class FreeplayState extends MusicBeatState
 		}
 
 		scoreText.text = 'PERSONAL BEST: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+		if (ClientPrefs.data.languages == 'Español')
+			scoreText.text = 'MEJOR PUNTUACIÓN: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
+		
 		positionHighscore();
 
 		var shiftMult:Int = 1;

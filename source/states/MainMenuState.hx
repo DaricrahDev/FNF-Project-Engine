@@ -56,6 +56,7 @@ class MainMenuState extends MusicBeatState
 
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
+	var shiftMult:Int = 1;
 
 	var gradient:FlxSprite;
 	var bg:FlxSprite;
@@ -74,14 +75,13 @@ class MainMenuState extends MusicBeatState
 	var decorations:FlxSprite;
 
 	var menuJSON:MenuData;
-
 	//var featureIsClickable:Bool = false;
 
 	override function create()
 	{
 		FlxG.sound.playMusic(Paths.music('freakyMenu'), FlxG.sound.volume);
 
-		menuJSON = Json.parse(Paths.getTextFromFile('moddingTools/customMenus/customMenus.json'));
+		menuJSON = Json.parse(Paths.getTextFromFile('moddingTools/customMenus.json'));
 
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
@@ -114,6 +114,7 @@ class MainMenuState extends MusicBeatState
 		bg.scrollFactor.set(0, yScroll);
 		bg.setGraphicSize(Std.int(bg.width * 1.175));
 		bg.updateHitbox();
+		bg.color = CoolUtil.colorFromString(menuJSON.bgColor);
 		add(bg);
 		
 		gradient = new FlxSprite();
@@ -141,18 +142,6 @@ class MainMenuState extends MusicBeatState
 		{
 			gradient.loadGraphic(Paths.image('placeholders/invisibleImg'));
 			gradient.screenCenter();
-		}
-
-		if (menuJSON.bgColor != null && menuJSON.bgColor.length > 0 && menuJSON.bgColor != "none") {
-			bg.color = CoolUtil.colorFromString(menuJSON.bgColor);
-		}
-		else
-		{
-			bg.color = FlxColor.TRANSPARENT;
-		}
-
-		if (menuJSON.bgColor != "white") {
-			bg.color = 0xfffffff;
 		}
 
 		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));
@@ -196,7 +185,12 @@ class MainMenuState extends MusicBeatState
 			menuItem.antialiasing = ClientPrefs.data.antialiasing;
 			menuItem.scale.x = scale;
 			menuItem.scale.y = scale;
-			menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
+			if (ClientPrefs.data.languages == 'Español') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/spanish/menu_' + optionShit[i]);
+			}
+			else if ( ClientPrefs.data.languages == 'English') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
+			}
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
@@ -212,19 +206,6 @@ class MainMenuState extends MusicBeatState
 
 		camGame.zoom = 3;
 		FlxTween.tween(camGame, {zoom: 1}, 1.1, {ease: FlxEase.expoInOut});
-
-		if (ClientPrefs.data.goreEnabled) {
-			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween_gore'));
-		}
-		else
-		{
-			decorations = new FlxSprite(0, 0).loadGraphic(Paths.image('halloween'));
-		}
-			
-		decorations.screenCenter(XY);
-		decorations.scale.set(1.1, 1.1);
-		decorations.visible = false;
-		add(decorations);
 
 		mods = new FlxSprite(935, -121).loadGraphic(Paths.image('mic-d-up/mods'));
 		add(mods);
@@ -283,11 +264,6 @@ class MainMenuState extends MusicBeatState
 
 		// NG.core.calls.event.logEvent('swag').send();
 
-		if (ClientPrefs.data.spookymonth) {
-			decorations.visible = true;
-			featureText.text = "It's spooky month!";
-		}
-
 		changeItem();
 
 		super.create();
@@ -297,86 +273,6 @@ class MainMenuState extends MusicBeatState
 
 	override function update(elapsed:Float)
 	{		
-		if (ClientPrefs.data.spookymonth) {
-			bg.color = 0xff292649;
-			gradient.visible = false;
-		}
-		else
-		{
-			bg.color = CoolUtil.colorFromString(menuJSON.bgColor);
-			gradient.visible = true;
-		}
-
-		/*if (featureIsClickable) {
-			if (FlxG.mouse.overlaps(featureText)) {
-				featureText.color = FlxColor.YELLOW;
-				if (FlxG.mouse.justPressed) {
-					MusicBeatState.switchState(new OptionsState());
-				}
-			}
-			else {
-				featureText.color = FlxColor.CYAN;
-			}
-		}
-		else {
-			featureText.color = FlxColor.WHITE;
-		}*/
-
-		/* bye bye shitty options
-		if (ClientPrefs.data.bgcolor == 'Purple (Default)')
-		{
-			bg.color = 0xff7e0097;
-			gradient.loadGraphic(Paths.image('gradient'));
-		}
-		else if (ClientPrefs.data.bgcolor == 'Red')
-		{
-			bg.color = 0xffdf2222;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xffdf2222;
-		}
-		else if (ClientPrefs.data.bgcolor == 'Green')
-		{
-			bg.color = 0xff6cfd18;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xff6cfd18;
-		}
-		else if (ClientPrefs.data.bgcolor == 'Blue')
-		{
-			bg.color = 0xff00c3ff;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xff00c3ff;
-		}
-		else if (ClientPrefs.data.bgcolor == 'White')
-		{
-			bg.color = 0xffffffff;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xffffffff;
-		}
-		else if (ClientPrefs.data.bgcolor == 'Orange')
-		{
-			bg.color = 0xffff5e00;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xffff5e00;
-		}
-		else if (ClientPrefs.data.bgcolor == 'Pink')
-		{
-			bg.color = 0xfff737dd;
-			gradient.loadGraphic(Paths.image('gradient_white'));
-			gradient.color = 0xfff737dd;
-		}
-		else if (ClientPrefs.data.bgcolor == 'RGB') {
-			hue += elapsed * 10;
-			if (hue > 360)
-			hue -= 360;
-
-			var color = FlxColor.fromHSB(Std.int(hue), 1, 1);
-			bg.color = color;
-			gradient.visible = false;
-		}
-		else if (ClientPrefs.data.bgcolor == 'OG') {
-			bg.loadGraphic(Paths.image('menuBG'));
-			gradient.visible = false;
-		}*/
 
 		if (FlxG.mouse.overlaps(mods))
 			{
@@ -389,6 +285,7 @@ class MainMenuState extends MusicBeatState
 			}
 			else
 			{
+
 				FlxTween.tween(mods, {x: 935, y: -121}, 0.1, {ease: FlxEase.quadInOut});
 			}
 	
@@ -404,7 +301,6 @@ class MainMenuState extends MusicBeatState
 						else if (ClientPrefs.data.creditsType == 'Credits Menu') {
 							MusicBeatState.switchState(new CreditsState());
 						}
-					//FlxG.sound.play(Paths.sound('confirmMenu'));
 				}
 			}
 			else
@@ -441,7 +337,7 @@ class MainMenuState extends MusicBeatState
 				selectedSomethin = true;
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 				MusicBeatState.switchState(new TitleState());
-			}
+			}	
 
 			if (controls.ACCEPT)
 			{
@@ -541,6 +437,7 @@ class MainMenuState extends MusicBeatState
 			spr.animation.play('idle');
 			spr.updateHitbox();
 
+			
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');

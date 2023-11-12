@@ -8,14 +8,12 @@ class ModConfig extends BaseOptionsMenu
 {
 	public function new()
 	{
-		title = 'Mod Preferences';
-		rpcTitle = 'Mod Preferences Menu'; //for Discord Rich Presence
+		title = 'Preferences';
+		rpcTitle = 'Preferences Menu'; //for Discord Rich Presence
 
-	var option:Option = new Option('Spooky Month Event',
-	"If enabled, enables the spooky month event.",
-	'spookymonth',
-	'bool');
-	addOption(option);
+		if (ClientPrefs.data.languages == 'Español')
+			title = 'Preferencias';
+			rpcTitle = 'Menú de Preferencias';
 
 		var option:Option = new Option('Oneshot Mod',
 			'If checked, enables the oneshot mod mode.',
@@ -39,7 +37,7 @@ class ModConfig extends BaseOptionsMenu
 		"Select between two menu types, the OG or the one we made for this engine.",
 		'menuType',
 		'string',
-		['Project Engine', 'FNF', 'PE (Mouse)']);
+		['Project Engine', 'FNF']);
 	addOption(option);
 
 	var option:Option = new Option('Credits Type:',
@@ -50,7 +48,7 @@ class ModConfig extends BaseOptionsMenu
 	addOption(option);
 
 	var option:Option = new Option('Enable Freeplay Characters',
-	"[BETA]\nIf enabled, enables freeplay characters.",
+	"[W.I.P]\nIf enabled, enables freeplay characters.",
 	'enablefreeplayChars',
 	'bool');
 	addOption(option);

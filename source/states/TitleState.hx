@@ -68,8 +68,6 @@ class TitleState extends MusicBeatState
 	var titleTextAlphas:Array<Float> = [1, .64];
 
 	var curWacky:Array<String> = [];
-	var customTitleMenu:Array<String> = [];
-	var customAfterTitle:Array<String> = [];
 
 	var wackyImage:FlxSprite;
 
@@ -112,10 +110,8 @@ class TitleState extends MusicBeatState
 		FlxG.keys.preventDefaultKeys = [TAB];
 
 		curWacky = FlxG.random.getObject(getIntroTextShit());
-		customTitleMenu = FlxG.random.getObject(getCustomTitleTxt());
-		customAfterTitle = FlxG.random.getObject(getCustomAfterTitleTxt());
 
-		titleCreditsStuff = Json.parse(Paths.getTextFromFile('moddingTools/customMenus/customTitle.json'));
+		titleCreditsStuff = Json.parse(Paths.getTextFromFile('moddingTools/customTitle.json'));
 
 		super.create();
 
@@ -126,14 +122,14 @@ class TitleState extends MusicBeatState
 		#if CHECK_FOR_UPDATES
 		if(ClientPrefs.data.checkForUpdates && !closedState) {
 			trace('checking for update');
-			var http = new haxe.Http("https://raw.githubusercontent.com/ShadowMario/FNF-PsychEngine/main/gitVersion.txt");
+			var http = new haxe.Http("https://raw.githubusercontent.com/DaricrahDev/FNF-Project-Engine/main/gitVersion.txt");
 
 			http.onData = function (data:String)
 			{
 				updateVersion = data.split('\n')[0].trim();
 				var curVersion:String = Info.updateVersion.trim();
 				trace('version online: ' + updateVersion + ', your version: ' + curVersion);
-				if(updateVersion != curVersion) {
+				if(updateVersion > curVersion) {
 					trace('versions arent matching!');
 					mustUpdate = true;
 				}
@@ -384,68 +380,37 @@ class TitleState extends MusicBeatState
 		// credGroup.add(credTextShit);
 	}
 
+	var transitioning:Bool = false;
+	private static var playJingle:Bool = false;
+	
 	function getIntroTextShit():Array<Array<String>>
-	{
-		#if MODS_ALLOWED
-		var firstArray:Array<String> = Mods.mergeAllTextsNamed('data/introText.txt', Paths.getPreloadPath());
-		#else
-		var fullText:String = Assets.getText(Paths.txt('introText'));
-		var firstArray:Array<String> = fullText.split('\n');
-		#end
-		var swagGoodArray:Array<Array<String>> = [];
-
-		for (i in firstArray)
-		{
-			swagGoodArray.push(i.split('--'));
-		}
-
-		return swagGoodArray;
-	}
-
-	function getCustomAfterTitleTxt():Array<Array<String>>
 		{
 			#if MODS_ALLOWED
-			var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/titleSecondaryTexts.txt', Paths.getPreloadPath());
+			var firstArray:Array<String> = Mods.mergeAllTextsNamed('data/introText.txt', Paths.getPreloadPath());
 			#else
-			var fullText:String = Assets.getText(Paths.customMenusTxt('titleSecondaryTexts'));
+			var fullText:String = Assets.getText(Paths.txt('introText'));
 			var firstArray:Array<String> = fullText.split('\n');
 			#end
 			var swagGoodArray:Array<Array<String>> = [];
 	
 			for (i in firstArray)
 			{
-				swagGoodArray.push(i.split('::'));
+				swagGoodArray.push(i.split('--'));
 			}
 	
 			return swagGoodArray;
 		}
 
-		function getCustomTitleTxt():Array<Array<String>> //
-			{
-				#if MODS_ALLOWED
-				var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/titleCredits.txt', Paths.getPreloadPath());
-				#else
-				var fullText:String = Assets.getText(Paths.customMenusTxt('titleCredits'));
-				var firstArray:Array<String> = fullText.split('\n');
-				#end
-				var swagGoodArray:Array<Array<String>> = [];
-		
-				for (i in firstArray)
-				{
-					swagGoodArray.push(i.split('::'));
-				}
-		
-				return swagGoodArray;
-			}
-
-	var transitioning:Bool = false;
-	private static var playJingle:Bool = false;
-	
 	var newTitle:Bool = false;
 	var titleTimer:Float = 0;
 
 	override function update(elapsed:Float)
 	{
+		var fullscreenKeys:Array<FlxKey> = [FlxKey.F, FlxKey.F11];
+		if (FlxG.keys.anyJustPressed(fullscreenKeys)) {
+			FlxG.fullscreen = !FlxG.fullscreen;
+		}
+
 		if (FlxG.sound.music != null)
 			Conductor.songPosition = FlxG.sound.music.time;
 		// FlxG.watch.addQuick('amp', FlxG.sound.music.amplitude);

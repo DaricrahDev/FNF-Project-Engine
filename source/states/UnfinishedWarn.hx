@@ -18,6 +18,9 @@ class UnfinishedWarning extends MusicBeatState {
 		text.screenCenter();
 		add(text);
 
+		if (ClientPrefs.data.languages == 'Español')
+			text.text = "AVISO!\n\nESTA PARTE DEL JUEGO NO ESTÁ TERMINADA!\nENCONTRAR ERRORES MIENTRAS USA ESTE NIVEL ES MUY COMÚN, SI ENCUENTRAS UN ERROR, POR FAVOR, REPÓRTALO AL SERVIDOR DE DISCORD";
+
 		super.create();
 	}
 

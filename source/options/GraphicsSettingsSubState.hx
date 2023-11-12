@@ -11,6 +11,10 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		title = 'Graphics';
 		rpcTitle = 'Graphics Settings Menu'; //for Discord Rich Presence
 
+		if (ClientPrefs.data.languages == 'Español')
+			title = 'Gráficos';
+			rpcTitle = 'Menú de Gráficos';
+
 		boyfriend = new Character(840, 170, 'bf', true);
 		boyfriend.setGraphicSize(Std.int(boyfriend.width * 0.75));
 		boyfriend.updateHitbox();
@@ -58,14 +62,19 @@ class GraphicsSettingsSubState extends BaseOptionsMenu
 		option.onChange = onChangeFramerate;
 		#end
 
-		var option:Option = new Option('Gore',
+		var option:Option = new Option('Fullscreen',
 			"Pretty self explanatory, isn't it?",
-			'goreEnabled',
+			'fullscreenEnabled',
 			'bool');
 		addOption(option);
+		option.onChange = onChangeFullscreen;
 
 		super();
 		insert(1, boyfriend);
+	}
+
+	function onChangeFullscreen() {
+		FlxG.fullscreen = !FlxG.fullscreen;
 	}
 
 	function onChangeAntiAliasing()

@@ -22,6 +22,15 @@ class MasterEditorMenu extends MusicBeatState
 		'Dialogue Portrait Editor',
 		'Note Splash Debug'
 	];
+	var optionsEsp:Array<String> = [
+		'Editor Chart',
+		'Editor de personajes',
+		'Editor de weeks',
+		'Editor de p. del menú',
+		'Editor de diálogos',
+		'Editor de i. de diálogos',
+		'Debug de Splashes'
+	];
 	private var grpTexts:FlxTypedGroup<Alphabet>;
 	private var directories:Array<String> = [null];
 
@@ -29,7 +38,8 @@ class MasterEditorMenu extends MusicBeatState
 	private var curDirectory = 0;
 	private var directoryTxt:FlxText;
 
-	var randomShit:Array<String> = [];
+	var leText:Alphabet;
+
 
 	override function create()
 	{
@@ -49,7 +59,9 @@ class MasterEditorMenu extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			var leText:Alphabet = new Alphabet(90, 320, options[i], true);
+			leText = new Alphabet(90, 320, options[i], true);
+			if (ClientPrefs.data.languages == 'Español')
+				leText = new Alphabet(90, 320, optionsEsp[i], true);
 			leText.isMenuItem = true;
 			leText.targetY = i;
 			grpTexts.add(leText);
@@ -167,6 +179,13 @@ class MasterEditorMenu extends MusicBeatState
 			curSelected = options.length - 1;
 		if (curSelected >= options.length)
 			curSelected = 0;
+
+		if (ClientPrefs.data.languages == 'Español') {
+			if (curSelected < 0)
+				curSelected = optionsEsp.length - 1;
+			if (curSelected >= optionsEsp.length)
+				curSelected = 0;
+		}
 	}
 
 	#if MODS_ALLOWED
@@ -184,10 +203,14 @@ class MasterEditorMenu extends MusicBeatState
 		WeekData.setDirectoryFromWeek();
 		if(directories[curDirectory] == null || directories[curDirectory].length < 1)
 			directoryTxt.text = '< No Mod Directory Loaded >';
+		if (ClientPrefs.data.languages == 'Español')
+			directoryTxt.text = '< Ningún Mod Cargado >';
 		else
 		{
 			Mods.currentModDirectory = directories[curDirectory];
 			directoryTxt.text = '< Loaded Mod Directory: ' + Mods.currentModDirectory + ' >';
+			if (ClientPrefs.data.languages == 'Español')
+				directoryTxt.text = '< Mod cargado: ' + Mods.currentModDirectory + ' >';
 		}
 		directoryTxt.text = directoryTxt.text.toUpperCase();
 	}

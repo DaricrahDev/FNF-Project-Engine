@@ -10,11 +10,13 @@ import states.ProjectEngineMouse;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Mod Preferences'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Preferences'];
+	var optionsEsp:Array<String> = ['Notas', 'Controles', 'Ajustar Combo y delay', 'Gráficos', 'Visuales y UI', 'Juego', 'Preferencias'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
 	public static var onPlayState:Bool = false;
+	var optionText:Alphabet;
 	var gradient:FlxSprite;
 
 	function openSelectedSubstate(label:String) {
@@ -31,7 +33,7 @@ class OptionsState extends MusicBeatState
 				openSubState(new options.GameplaySettingsSubState());
 			case 'Adjust Delay and Combo':
 				MusicBeatState.switchState(new options.NoteOffsetState());
-			case 'Mod Preferences':
+			case 'Preferences':
 				openSubState(new options.ModConfig());
 		}
 	}
@@ -46,10 +48,11 @@ class OptionsState extends MusicBeatState
 		DiscordClient.changePresence("Options Menu", null);
 		#end
 
-		FlxG.sound.playMusic(Paths.music('optionsMenu'), 1);
+		FlxG.sound.playMusic(Paths.music('optionsMenu'), FlxG.sound.volume);
 
 		bg = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
 		bg.screenCenter();
+		bg.color = 0xff0c77b6;
 		add(bg);
 
 		gradient = new FlxSprite().loadGraphic(Paths.image('gradient_options'));
@@ -70,7 +73,9 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 0, options[i], true);
+			optionText = new Alphabet(0, 0, options[i], true);
+			if (ClientPrefs.data.languages == 'Español')
+				optionText = new Alphabet(0, 0, optionsEsp[i], true); 
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
@@ -95,16 +100,6 @@ class OptionsState extends MusicBeatState
 	override function update(elapsed:Float) {
 		super.update(elapsed);
 
-		if (ClientPrefs.data.spookymonth) {
-			bg.color = 0xffe07902;
-			gradient.visible = false;
-		}
-		else
-		{
-			bg.color = 0xff0c77b6;
-			gradient.visible = true;
-		}
-
 		if (controls.UI_UP_P) {
 			changeSelection(-1);
 		}
@@ -126,19 +121,26 @@ class OptionsState extends MusicBeatState
 			else if (ClientPrefs.data.menuType == 'FNF') {
 				MusicBeatState.switchState(new FNFMainMenu());
 			}
-			else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-				MusicBeatState.switchState(new UnfinishedWarning());
-			}
 		}
 		else if (controls.ACCEPT) openSelectedSubstate(options[curSelected]);
 	}
 	
 	function changeSelection(change:Int = 0) {
-		curSelected += change;
+
+		if (ClientPrefs.data.languages == 'Español') {
+			curSelected += change;
 		if (curSelected < 0)
-			curSelected = options.length - 1;
-		if (curSelected >= options.length)
+			curSelected = optionsEsp.length - 1;
+		if (curSelected >= optionsEsp.length)
 			curSelected = 0;
+		}
+		else if (ClientPrefs.data.languages == 'English') {
+			curSelected += change;
+			if (curSelected < 0)
+				curSelected = options.length - 1;
+			if (curSelected >= options.length)
+				curSelected = 0;
+		}
 
 		var bullShit:Int = 0;
 

@@ -3,17 +3,17 @@
 		"DaricrahDev",
 		"QC",
 		"FoxLOID",
-		"Taurenado",
+		"Da\nTaurenado",
 		"Killshot",
-		"slosher"
+		"Barbara\nOficial"
 	],
 	"descriptions": [
 		"Main programmer, coded all of the features. I work on a lot of FNF Mods, i make cool stuff.",
 		"A great person that helped me making this engine, gave me ideas and made cool art for the logo! Thank you so much!",
 		"Made most of the textures you can see on the engine",
-		"Hello im an artist for this mod! nuh idk what to put here except im usually bored and i like to play games so if you want to play some games, hit me up",
+		"\n\nHello im an artist for this mod! nuh idk what to put here except im usually bored and i like to play games so if you want to play some games, hit me up",
 		"No description provided.",
-		"No description provided."
+		"\n\nJust a programmer who programs on a cell phone."
 	],
 	"links": [
 		"https://www.youtube.com/channel/UCIN9kMpVu9cFj0RIJ8NXDow",
@@ -21,7 +21,7 @@
 		"https://twitter.com/FoxLOID_",
 		"null",
 		"null",
-		"null"
+		"https://twitter.com/Barbara_Origami"
 	],
 	"badgeImages": [
 		"badge4",
@@ -29,7 +29,7 @@
 	 	"badge4", 
 	 	"badge2", 
 		"badge3",
-		"badge3"
+		"badge1"
 	],
 	"imageLinks": [
 		"bios/mainDevs/daricrahdev",
@@ -37,7 +37,7 @@
 		"bios/mainDevs/foxloid",
 		"bios/mainDevs/dataurenado",
 		"placeholders/noBiosImg",
-		"placeholders/noBiosImg"
+		"bios/mainDevs/barbaraOficial"
 	],
 	"badgeText": [
 		"Main Programmer",
@@ -45,9 +45,8 @@
 		"Main Artist",
 		"Artist",
 		"Programmer",
-		"Composer"
+		"Programmer"
 	],
 	"backgroundSprite": "menuDesat",
-	"bgColor": "0xff0498d3",
-	"gradientColor": "0xff055d80"
+	"backgroundColor": "0xf0579fff"
 }

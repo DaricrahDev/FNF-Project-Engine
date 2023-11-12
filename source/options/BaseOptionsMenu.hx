@@ -32,6 +32,11 @@ class BaseOptionsMenu extends MusicBeatSubstate
 
 		if(title == null) title = 'Options';
 		if(rpcTitle == null) rpcTitle = 'Options Menu';
+
+		if (ClientPrefs.data.languages == 'Español') {
+			if(title == null) title = 'Opciones';
+			if (rpcTitle == null) rpcTitle = 'Menú de Opciones';
+		}
 		
 		#if desktop
 		DiscordClient.changePresence(rpcTitle, null);
@@ -123,28 +128,6 @@ class BaseOptionsMenu extends MusicBeatSubstate
 	var holdValue:Float = 0;
 	override function update(elapsed:Float)
 	{
-		if (ClientPrefs.data.spookymonth) {
-			var intendedColor:Int;
-			intendedColor = 0xFFFF8A05;
-			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
-				onComplete: function(twn:FlxTween) {
-					colorTween = null;
-				}
-			});
-			gradient.visible = false;
-		}
-		else
-		{
-			var intendedColor:Int;
-			intendedColor = 0xff0c77b6;
-			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
-				onComplete: function(twn:FlxTween) {
-					colorTween = null;
-					gradient.visible = true;
-				}
-			});
-		}
-
 		if (controls.UI_UP_P)
 		{
 			changeSelection(-1);

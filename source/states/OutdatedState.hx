@@ -38,6 +38,15 @@ class OutdatedState extends MusicBeatState
 		warnText.antialiasing = true;
 		warnText.screenCenter();
 		add(warnText);
+
+		if (ClientPrefs.data.languages == "Español") {
+			warnText.text = "¡Parece que Project Engine está desactualizado!\n\n
+			¡La versión que usas (" + Info.updateVersionAlt + ") es antigua! Descarga " + TitleState.updateVersion + " (la más reciente)\n\n
+			Presiona ENTER para ir a github
+			Presiona ESCAPE para continuar\n
+			\n
+			¡Gracias por usar Project Engine!";
+		}
 	}
 
 	override function update(elapsed:Float)

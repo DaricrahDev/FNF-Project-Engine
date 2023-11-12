@@ -9,6 +9,7 @@ import states.TitleState;
 
 // Add a variable here and it will get automatically saved
 class SaveVariables {
+	public var fullscreenEnabled:Bool = false;
 	public var downScroll:Bool = false;
 	public var isOneshotMod:Bool = false;
 	public var beatTitle:Bool = false;
@@ -58,6 +59,7 @@ class SaveVariables {
 	public var hitsoundVolume:Float = 0;
 	public var pauseMusic:String = 'Tea Time';
 	public var checkForUpdates:Bool = true;
+	public var languages:String = 'English';
 	public var comboStacking:Bool = true;
 	public var gameplaySettings:Map<String, Dynamic> = [
 		'scrollspeed' => 1.0,
@@ -96,7 +98,7 @@ class SaveVariables {
 }
 
 class ClientPrefs {
-
+	public static var fullscreenEnabled:Bool = false;
 	public static var data:SaveVariables = null;
 	public static var enablefreeplayChars:Bool = true;
 	public static var defaultData:SaveVariables = null;
@@ -104,6 +106,7 @@ class ClientPrefs {
 	public static var menuType:String = 'Project Engine';
 	public static var creditsType:String = "Bios Menu";
 	public static var autoResizeImg:Bool = true;
+	public static var languages:String = 'English';
 	public static var beatTitle:Bool = false;
 	public static var spookymonth:Bool = false;
 	public static var goreEnabled:Bool = true;

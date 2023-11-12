@@ -33,15 +33,14 @@ typedef BiosMenuJSON =
 	imageLinks:Array<String>,
 	badgeText:Array<String>,
 	backgroundSprite:String,
-	bgColor:String,
-	gradientColor:String
+	backgroundColor:String
 }
 class BiosMenuState extends MusicBeatState {
 	
 	var bg:FlxSprite;
 	var background:FlxSprite;
     var imageSprite:FlxSprite;
-	
+
     var imagePath:Array<String>;
     var charDesc:Array<String>;
     var charName:Array<String>;
@@ -58,10 +57,6 @@ class BiosMenuState extends MusicBeatState {
 
 	var gradient:FlxSprite;
 
-	var badgeImageStuff:Array<String> = []; // dis one for badge images
-	var badgeTextStuff:Array<String> = []; // and dis one for badge text
-	var customBGc:Array<String> = []; // bg color
-
 	var badgeImg:FlxSprite;
 	var badgetextx:FlxText;
 
@@ -69,7 +64,7 @@ class BiosMenuState extends MusicBeatState {
 
 	override function create() {
 		
-		biosJSON = Json.parse(Paths.getTextFromFile('moddingTools/customBios/customBios.json'));
+		biosJSON = Json.parse(Paths.getTextFromFile('moddingTools/customBios.json'));
 
 		transIn = FlxTransitionableState.defaultTransIn;
 		transOut = FlxTransitionableState.defaultTransOut;
@@ -83,16 +78,15 @@ class BiosMenuState extends MusicBeatState {
 	
 		background = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
         background.setGraphicSize(Std.int(background.width * 1.2));
-		background.color = CoolUtil.colorFromString(biosJSON.bgColor);
         background.screenCenter();
+		background.color = CoolUtil.colorFromString(biosJSON.backgroundColor);
         add(background);
 
-		gradient = new FlxSprite().loadGraphic(Paths.image('gradient_white'));
+		/*gradient = new FlxSprite().loadGraphic(Paths.image('gradient_white'));
 		gradient.screenCenter();
-		gradient.color = CoolUtil.colorFromString(biosJSON.gradientColor);
 		gradient.scale.set(1.1, 1.1);
 		gradient.x += 20;
-		add(gradient);
+		add(gradient);*/
 
 		// i took this from psych's engine code lol
 		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));

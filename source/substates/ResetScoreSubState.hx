@@ -40,12 +40,12 @@ class ResetScoreSubState extends MusicBeatSubstate
 		add(bg);
 
 		var tooLong:Float = (name.length > 18) ? 0.8 : 1; //Fucking Winter Horrorland
-		var text:Alphabet = new Alphabet(0, 180, "Reset the score of", true);
-		text.screenCenter(X);
-		alphabetArray.push(text);
-		text.alpha = 0;
-		add(text);
-		var text:Alphabet = new Alphabet(0, text.y + 90, name, true);
+		var resetText:Alphabet = new Alphabet(0, 180, "Reset the score of", true);
+		resetText.screenCenter(X);
+		alphabetArray.push(resetText);
+		resetText.alpha = 0;
+		add(resetText);
+		var text:Alphabet = new Alphabet(0, resetText.y + 90, name, true);
 		text.scaleX = tooLong;
 		text.screenCenter(X);
 		if(week == -1) text.x += 60 * tooLong;
@@ -70,6 +70,14 @@ class ResetScoreSubState extends MusicBeatSubstate
 		noText.x += 200;
 		add(noText);
 		updateOptions();
+
+		switch (ClientPrefs.data.languages) {
+			case 'Español':
+				yesText.text = 'Sí';
+				noText.text = 'No';
+				resetText.text = 'Borrar puntuación de';
+				resetText.x -= 70;
+		}
 	}
 
 	override function update(elapsed:Float)
