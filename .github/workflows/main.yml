@@ -75,8 +75,7 @@ jobs:
           haxelib install SScript 6.1.80
           haxelib install hxcpp > /dev/null --quiet
           haxelib install tjson 1.4.0
-          haxelib git hxCodec https://github.com/polybiusproxy/hxCodec.git
-          haxelib set hxCodec 2.6.1
+          haxelib install hxCodec 2.6.1
           haxelib install lime 8.0.1
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit.git
           hadelib install openfi 9.2.1
