@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build
+name: Project Engine - Build
 
 
 # Controls when the action will run.
@@ -67,11 +67,18 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Install Haxelib
         run: |
-          haxelib setup C:/haxelib
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc.git
+          haxelib install flixel-addons 3.0.2
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.5.0
+          haxelib install flixel 5.2.2
+          haxelib install SScript 6.1.80
           haxelib install hxcpp > /dev/null --quiet
-          haxelib install hmm --quiet
-          haxelib install hxCodec 2.5.1
-          haxelib run hmm install
+          haxelib install tjson 1.4.0
+          haxelib git hxCodec https://github.com/polybiusproxy/hxCodec.git
+          haxelib install lime 8.0.1
+          haxelib git linc_luajit https://github.com/superpowers04/linc_luajit.git
+          hadelib install openfi 9.2.1
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
