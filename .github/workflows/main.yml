@@ -79,6 +79,8 @@ jobs:
           haxelib install lime 8.0.1
           haxelib git linc_luajit https://github.com/superpowers04/linc_luajit.git
           hadelib install openfi 9.2.1
+          haxelib install hmm --quiet
+          haxelib run hmm install
         shell: cmd
       - name: Create Version Tag
         run: echo "${{github.run_id}}" > VERSION
