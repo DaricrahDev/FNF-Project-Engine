@@ -1,15 +1,15 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build
+name: Project Engine - Build
 
 
 # Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ main, experimental ]
+    branches: [ Fraze-glow-camera ]
   pull_request:
-    branches: [ main, experimental ]
+    branches: [ Fraze-glow-camera ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -67,10 +67,19 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Install Haxelib
         run: |
-          haxelib setup C:/haxelib
+          haxelib git discord_rpc https://github.com/Aidan63/linc_discord-rpc.git
+          haxelib install flixel-addons 3.0.2
+          haxelib install flixel-tools 1.5.1
+          haxelib install flixel-ui 2.5.0
+          haxelib install flixel 5.2.2
+          haxelib install SScript 6.1.80
           haxelib install hxcpp > /dev/null --quiet
+          haxelib install tjson 1.4.0
+          haxelib install hxCodec 2.6.1
+          haxelib install lime 8.0.1
+          haxelib git linc_luajit https://github.com/superpowers04/linc_luajit.git
+          hadelib install openfi 9.2.1
           haxelib install hmm --quiet
-          haxelib install hxCodec 2.5.1
           haxelib run hmm install
         shell: cmd
       - name: Create Version Tag
