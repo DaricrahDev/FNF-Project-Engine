@@ -1,6 +1,5 @@
 package options;
 
-import states.UnfinishedWarn.UnfinishedWarning;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
 import states.MainMenuState;
@@ -11,7 +10,8 @@ import states.ProjectEngineMouse;
 class OptionsState extends MusicBeatState
 {
 	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay', 'Preferences'];
-	var optionsEsp:Array<String> = ['Notas', 'Controles', 'Ajustar Combo y delay', 'Gráficos', 'Visuales y UI', 'Juego', 'Preferencias'];
+	var optionsEsp:Array<String> = ['Notas', 'Controles', 'Ajustar Combo y delay', 'Gráficos', 'Visuales y IU', 'Jugabilidad', 'Preferencias'];
+	var optionsPt:Array<String> = ['Nota Cores', 'Controles', 'Ajustar atraso e combinação', 'Gráficos', 'Visuais e IU', 'Jogabilidade', 'Preferências'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
@@ -73,9 +73,12 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
+
 			optionText = new Alphabet(0, 0, options[i], true);
 			if (ClientPrefs.data.languages == 'Español')
 				optionText = new Alphabet(0, 0, optionsEsp[i], true); 
+			if (ClientPrefs.data.languages == 'Português')
+				optionText = new Alphabet(0, 0, optionsPt[i], true); 
 			optionText.screenCenter();
 			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
@@ -139,6 +142,13 @@ class OptionsState extends MusicBeatState
 			if (curSelected < 0)
 				curSelected = options.length - 1;
 			if (curSelected >= options.length)
+				curSelected = 0;
+		}
+		else if (ClientPrefs.data.languages == 'Português') {
+			curSelected += change;
+			if (curSelected < 0)
+				curSelected = optionsPt.length - 1;
+			if (curSelected >= optionsPt.length)
 				curSelected = 0;
 		}
 

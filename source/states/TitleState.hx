@@ -1,6 +1,5 @@
 package states;
 
-import states.UnfinishedWarn.UnfinishedWarning;
 import states.MainMenuState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
@@ -89,6 +88,7 @@ class TitleState extends MusicBeatState
 	var titleJSON:TitleData;
 
 	public static var updateVersion:String = '';
+	public static var seenChangelog:Bool = false;
 
 	override public function create():Void
 	{	
@@ -473,22 +473,20 @@ class TitleState extends MusicBeatState
 
 				transitioning = true;
 				// FlxG.sound.music.stop();
-
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
 					if (mustUpdate) {
 						MusicBeatState.switchState(new OutdatedState());
 					} else {
-						if (ClientPrefs.data.menuType == 'Project Engine') {
-							MusicBeatState.switchState(new MainMenuState());
-						}
-						else if (ClientPrefs.data.menuType == 'FNF') {
+						if (ClientPrefs.data.menuType == 'FNF') {
 							MusicBeatState.switchState(new FNFMainMenu());
 						}
-						else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-							MusicBeatState.switchState(new UnfinishedWarning());
-						}
+						else if (ClientPrefs.data.menuType == 'Project Engine') {
+							MusicBeatState.switchState(new MainMenuState());
+						}	
 					}
+							
+
 					closedState = true;
 				});
 				// FlxG.sound.play(Paths.music('titleShoot'), 0.7);

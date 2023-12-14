@@ -18,6 +18,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		if (ClientPrefs.data.languages == 'Español')
 			title = 'Visuales y UI';
 			rpcTitle = 'Menú de Visuales y UI';
+		
+		if(ClientPrefs.data.languages == 'Português')
+			title = 'Recursos Visuais e UI';
+			rpcTitle = 'Recursos Visuais e UI Menu';
 
 		// for note skins
 		notes = new FlxTypedGroup<StrumNote>();
@@ -154,7 +158,7 @@ class VisualsUISubState extends BaseOptionsMenu
 		"Pretty self explanatory, isnt it?",
 		'languages',
 		'string',
-		['English', 'Español']);
+		['English', 'Español', 'Português']);
 		addOption(option);
 
 		var option:Option = new Option('Combo Stacking',

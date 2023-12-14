@@ -66,16 +66,19 @@ class MainMenuState extends MusicBeatState
 	var featureText:FlxText;
 	var darkBG:FlxSprite;
 
+	var oneshotText:FlxText;
+	var darkOneBg:FlxSprite;
+
 	var mods:FlxSprite;
 	var credits:FlxSprite;
 
 	var intendedColor:Int;
 	var colorTween:FlxTween;
 
-	var decorations:FlxSprite;
-
-	var menuJSON:MenuData;
+	public static var menuJSON:MenuData;
 	//var featureIsClickable:Bool = false;
+
+	var whatsNew:Alphabet;
 
 	override function create()
 	{
@@ -144,6 +147,10 @@ class MainMenuState extends MusicBeatState
 			gradient.screenCenter();
 		}
 
+		if (menuJSON.bgColor == 'default'){
+			bg.color = CoolUtil.colorFromString(Info.defaultBackgroundColor);
+		}
+
 		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));
 		grid.velocity.set(30, 30);
 		grid.scale.set(1.3, 1.3);
@@ -188,8 +195,13 @@ class MainMenuState extends MusicBeatState
 			if (ClientPrefs.data.languages == 'Español') {
 				menuItem.frames = Paths.getSparrowAtlas('mainmenu/spanish/menu_' + optionShit[i]);
 			}
-			else if ( ClientPrefs.data.languages == 'English') {
+			else if (ClientPrefs.data.languages == 'English') {
 				menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
+			}
+			else if(ClientPrefs.data.languages == 'Português') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/portuguese/menu_' + optionShit[i]);
+				menuItem.scale.set(0.9, 0.9);
+				menuItem.y -= 15;
 			}
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
@@ -225,6 +237,32 @@ class MainMenuState extends MusicBeatState
 		featureText.visible = ClientPrefs.data.randomMessage;
 		add(featureText);
 
+		darkOneBg = new FlxSprite().makeGraphic(1504, 48, FlxColor.BLACK);
+		darkOneBg.visible = false;
+		darkOneBg.alpha = 0.5;
+		darkOneBg.screenCenter();
+		darkOneBg.y += 340;
+		add(darkOneBg);
+	
+		oneshotText = new FlxText(0, 0, 1244, "Current Song: " + menuJSON.oneshotSongName, 35);
+		oneshotText.font = featureText.font;
+		oneshotText.alignment = CENTER;
+		oneshotText.screenCenter();
+		oneshotText.y += 336;
+		oneshotText.visible = false;
+		add(oneshotText);
+
+		if (ClientPrefs.data.languages == 'Español') {
+			oneshotText.text = "Canción Actual: " + menuJSON.oneshotSongName;
+		}
+		else if (ClientPrefs.data.languages == 'English') {
+			oneshotText.text = "Current Song: " + menuJSON.oneshotSongName;
+		}
+		else if (ClientPrefs.data.languages == 'Português') {
+			oneshotText.text = "Música atual: " + menuJSON.oneshotSongName;
+		}
+
+
 		FlxG.camera.follow(camFollow, null, 0);
 
 		var versionShit:FlxText = new FlxText(12, FlxG.height - 44, 0, Info.engineNameWversion, 12);
@@ -237,8 +275,6 @@ class MainMenuState extends MusicBeatState
 		versionShit.antialiasing = true;
 		versionShit.setFormat(Info.defaultFont, 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		add(versionShit);
-
-		//featureIsClickable = false;
 
 		switch (FlxG.random.int(0, 5)) {
 
@@ -437,10 +473,24 @@ class MainMenuState extends MusicBeatState
 			spr.animation.play('idle');
 			spr.updateHitbox();
 
-			
 			if (spr.ID == curSelected)
 			{
 				spr.animation.play('selected');
+				if (ClientPrefs.data.isOneshotMod) {
+					if (curSelected == 0) {
+						oneshotText.visible = true;
+						darkOneBg.visible = true;
+					}
+					else if (curSelected == 1) {
+						oneshotText.visible = false;
+						darkOneBg.visible = false;
+					}
+					else if (curSelected == 2) {
+						oneshotText.visible = false;
+						darkOneBg.visible = false;
+					}
+				}
+				
 				var add:Float = 0;
 				if(menuItems.length > 4) {
 					add = menuItems.length * 8;
@@ -448,6 +498,7 @@ class MainMenuState extends MusicBeatState
 				camFollow.setPosition(spr.getGraphicMidpoint().x, spr.getGraphicMidpoint().y - add);
 				spr.centerOffsets();
 			}
+			
 		});
 	}
 }

@@ -77,6 +77,11 @@ class ResetScoreSubState extends MusicBeatSubstate
 				noText.text = 'No';
 				resetText.text = 'Borrar puntuación de';
 				resetText.x -= 70;
+			case 'Português':
+				yesText.text = 'Sim';
+				noText.text = 'Não';
+				resetText.text = 'Excluir pontuação de';
+				resetText.x -= 70;
 		}
 	}
 

@@ -14,4 +14,6 @@ class Info {
 	public static var engineNameWversion:String = "Project Engine " + updateVersionAlt;
 	public static var engineNameNoversion:String = "Project Engine";
 	public static var defaultFont:String = "VCR OSD Mono"; 
+	public static var defaultBackgroundColor:String = "0xff7e0097";
+	public static var defaultBackgroundColorFNF:String = "0x0DA2E7";
 } 

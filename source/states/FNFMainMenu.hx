@@ -17,6 +17,9 @@ import objects.AchievementPopup;
 import states.editors.MasterEditorMenu;
 import options.OptionsState;
 import lime.utils.Assets;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.display.FlxBackdrop;
+import tjson.TJSON as Json;
 
 class FNFMainMenu extends MusicBeatState
 {
@@ -40,10 +43,10 @@ class FNFMainMenu extends MusicBeatState
 	var magenta:FlxSprite;
 	var camFollow:FlxObject;
 
-	var playSongName:Array<String> = [];
-
 	override function create()
-	{	
+	{
+		FlxG.sound.playMusic(Paths.music('freakyMenu'), FlxG.sound.volume);
+
 		#if MODS_ALLOWED
 		Mods.pushGlobalMods();
 		#end
@@ -53,8 +56,6 @@ class FNFMainMenu extends MusicBeatState
 		// Updating Discord Rich Presence
 		DiscordClient.changePresence("In the Menus", null);
 		#end
-
-		playSongName = FlxG.random.getObject(getSongName());
 
 		camGame = new FlxCamera();
 		camAchievement = new FlxCamera();
@@ -77,6 +78,14 @@ class FNFMainMenu extends MusicBeatState
 		bg.updateHitbox();
 		bg.screenCenter();
 		add(bg);
+
+		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));
+		grid.velocity.set(30, 30);
+		grid.scale.set(1.3, 1.3);
+		grid.scrollFactor.set(0, yScroll);
+		grid.alpha = 0;
+		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
+		add(grid);
 
 		camFollow = new FlxObject(0, 0, 1, 1);
 		add(camFollow);
@@ -108,7 +117,17 @@ class FNFMainMenu extends MusicBeatState
 			menuItem.antialiasing = ClientPrefs.data.antialiasing;
 			menuItem.scale.x = scale;
 			menuItem.scale.y = scale;
-			menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
+			if (ClientPrefs.data.languages == 'Español') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/spanish/menu_' + optionShit[i]);
+			}
+			else if (ClientPrefs.data.languages == 'English') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
+			}
+			else if(ClientPrefs.data.languages == 'Português') {
+				menuItem.frames = Paths.getSparrowAtlas('mainmenu/portuguese/menu_' + optionShit[i]);
+				menuItem.scale.set(0.9, 0.9);
+			}
+			//menuItem.frames = Paths.getSparrowAtlas('mainmenu/menu_' + optionShit[i]);
 			menuItem.animation.addByPrefix('idle', optionShit[i] + " basic", 24);
 			menuItem.animation.addByPrefix('selected', optionShit[i] + " white", 24);
 			menuItem.animation.play('idle');
@@ -139,24 +158,6 @@ class FNFMainMenu extends MusicBeatState
 
 		super.create();
 	}
-
-	function getSongName():Array<Array<String>> // ADD ONLY ONE SONG!!!!
-		{
-			#if MODS_ALLOWED
-			var firstArray:Array<String> = Mods.mergeAllTextsNamed('customMenus/oneshotSongName.txt', Paths.getPreloadPath());
-			#else
-			var fullText:String = Assets.getText(Paths.customMenusTxt('oneshotSongName'));
-			var firstArray:Array<String> = fullText.split('\n');
-			#end
-			var swagGoodArray:Array<Array<String>> = [];
-	 
-			for (i in firstArray)
-			{
-				swagGoodArray.push(i.split('--'));
-			}
-	
-			return swagGoodArray;
-		}
 
 	var selectedSomethin:Bool = false;
 
@@ -224,19 +225,7 @@ class FNFMainMenu extends MusicBeatState
 								switch (daChoice)
 								{
 									case 'story_mode':
-										if (ClientPrefs.data.isOneshotMod) {
-											var songLowercase:String = Paths.formatToSongPath(playSongName[0]);
-											var poop:String = Highscore.formatSongButBetter(songLowercase, 'hard');
-
-										PlayState.SONG = Song.loadFromJson(poop, songLowercase);
-										PlayState.isStoryMode = false;
-										PlayState.storyDifficulty = 1;
-
-										LoadingState.loadAndSwitchState(new PlayState());
-										}
-										else {
-											MusicBeatState.switchState(new StoryMenuState());
-										}
+										MusicBeatState.switchState(new StoryMenuState());
 									case 'freeplay':
 										MusicBeatState.switchState(new FreeplayState());
 									#if MODS_ALLOWED

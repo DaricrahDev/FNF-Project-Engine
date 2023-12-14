@@ -1,6 +1,5 @@
 package states;
 
-import states.UnfinishedWarn.UnfinishedWarning;
 import backend.WeekData;
 import backend.Highscore;
 import backend.Song;
@@ -13,6 +12,8 @@ import states.editors.ChartingState;
 
 import substates.GameplayChangersSubstate;
 import substates.ResetScoreSubState;
+import flixel.addons.display.FlxGridOverlay;
+import flixel.addons.display.FlxBackdrop;
 
 #if MODS_ALLOWED
 import sys.FileSystem;
@@ -97,6 +98,13 @@ class FreeplayState extends MusicBeatState
 		bg.antialiasing = ClientPrefs.data.antialiasing;
 		add(bg);
 		bg.screenCenter();
+
+		var grid:FlxBackdrop = new FlxBackdrop(FlxGridOverlay.createGrid(80, 80, 160, 160, true, 0x33000000, 0x0));
+		grid.velocity.set(30, 30);
+		grid.scale.set(1.3, 1.3);
+		grid.alpha = 0;
+		FlxTween.tween(grid, {alpha: 1}, 0.5, {ease: FlxEase.quadOut});
+		add(grid);
 
 		grpSongs = new FlxTypedGroup<Alphabet>();
 		add(grpSongs);
@@ -322,9 +330,6 @@ class FreeplayState extends MusicBeatState
 			}
 			else if (ClientPrefs.data.menuType == 'FNF') {
 				MusicBeatState.switchState(new FNFMainMenu());
-			}
-			else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-				MusicBeatState.switchState(new UnfinishedWarning());
 			}
 		}
 

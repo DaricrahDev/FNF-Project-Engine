@@ -22,6 +22,7 @@ class PauseSubState extends MusicBeatSubstate
 	var menuItems:Array<String> = [];
 	var menuItemsOG:Array<String> = ['Resume', 'Restart Song', 'Change Difficulty', 'Options', 'Exit to menu'];
 	var menuItemsEsp:Array<String> = ['Continuar', 'Reiniciar canción', 'Cambiar dificultad', 'Opciones', 'Salir al menú'];
+	var menuItemsPt:Array<String> = ['Retomar', 'Reiniciar música', 'Alterar dificuldade', 'Opções', 'Sair para o menu'];
 	var difficultyChoices = [];
 	var curSelected:Int = 0;
 
@@ -37,7 +38,7 @@ class PauseSubState extends MusicBeatSubstate
 	public function new(x:Float, y:Float)
 	{
 		super();
-		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty') && menuItemsEsp.remove('Cambiar dificultad'); //No need to change difficulty if there is only one!
+		if(Difficulty.list.length < 2) menuItemsOG.remove('Change Difficulty') && menuItemsEsp.remove('Cambiar dificultad') && menuItemsPt.remove('Alterar dificuldade'); //No need to change difficulty if there is only one!
 
 		if(PlayState.chartingMode)
 		{
@@ -61,9 +62,15 @@ class PauseSubState extends MusicBeatSubstate
 				menuItemsOG.insert(4 + num, 'Toggle Practice Mode');
 				menuItemsOG.insert(5 + num, 'Toggle Botplay');
 			}
+			else if (ClientPrefs.data.languages == 'Português') {
+				menuItemsOG.insert(3 + num, 'Fim da música');
+				menuItemsOG.insert(4 + num, 'Alternar modo de prática');
+				menuItemsOG.insert(5 + num, 'Alternar Botplay');
+			}
 		}
 		menuItems = menuItemsOG;
 		if (ClientPrefs.data.languages == 'Español') menuItems = menuItemsEsp;
+		if (ClientPrefs.data.languages == 'Português') menuItems = menuItemsPt;
 
 		for (i in 0...Difficulty.list.length) {
 			var diff:String = Difficulty.getString(i);
@@ -148,6 +155,12 @@ class PauseSubState extends MusicBeatSubstate
 				practiceText.text = "MODO PRÁCTICA";
 				chartingText.text = "MODO CHARTING";
 				difficultyChoices.push('VOLVER');
+			case 'Português':
+				blueballedTxt.text = "Mortes: " + PlayState.deathCounter;
+				blueballedTxt.x = FlxG.width - (blueballedTxt.width + 10);
+				practiceText.text = "MODO DE PRÁCTICA";
+				chartingText.text = "MODO DE CHART";
+				difficultyChoices.push('VOLTAR');
 			case 'English':
 				difficultyChoices.push('BACK');	
 		}
@@ -226,6 +239,7 @@ class PauseSubState extends MusicBeatSubstate
 
 				menuItems = menuItemsOG;
 				if (ClientPrefs.data.languages == 'Español') menuItems = menuItemsEsp;
+				if (ClientPrefs.data.languages == 'Português') menuItems = menuItemsPt;
 
 				regenMenu();
 			}
@@ -258,7 +272,30 @@ class PauseSubState extends MusicBeatSubstate
 							FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.8);
 							FlxG.sound.music.time = pauseMusic.time;
 						}
-						OptionsState.onPlayState = true;	
+						OptionsState.onPlayState = true;
+						
+						case 'Retomar':
+							close();
+		
+						case 'Reiniciar música':
+							restartSong();
+		
+						case 'Alterar dificuldade':
+							menuItems = difficultyChoices;
+							deleteSkipTimeText();
+							regenMenu();
+		
+							case 'Opções':
+								PlayState.instance.paused = true; // For lua
+								PlayState.instance.vocals.volume = 0;
+								MusicBeatState.switchState(new OptionsState());
+								if(ClientPrefs.data.pauseMusic != 'None')
+								{
+									FlxG.sound.playMusic(Paths.music(Paths.formatToSongPath(ClientPrefs.data.pauseMusic)), pauseMusic.volume);
+									FlxTween.tween(FlxG.sound.music, {volume: 1}, 0.8);
+									FlxG.sound.music.time = pauseMusic.time;
+								}
+								OptionsState.onPlayState = true;	
 
 				case "Resume":
 					close();
@@ -323,8 +360,23 @@ class PauseSubState extends MusicBeatSubstate
 						else if (ClientPrefs.data.menuType == 'FNF') {
 							MusicBeatState.switchState(new FNFMainMenu());
 						}
-						else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-							MusicBeatState.switchState(new ProjectEngineMouse());
+
+						PlayState.cancelMusicFadeTween();
+						FlxG.sound.playMusic(Paths.music('freakyMenu'));
+						PlayState.changedDifficulty = false;
+						PlayState.chartingMode = false;
+						FlxG.camera.followLerp = 0;
+					}
+					case "Sair para o menu":
+					if (ClientPrefs.data.isOneshotMod) {
+						#if desktop DiscordClient.resetClientID(); #end
+						PlayState.deathCounter = 0;
+						PlayState.seenCutscene = false;
+						if (ClientPrefs.data.menuType == 'Project Engine') {
+							MusicBeatState.switchState(new MainMenuState());
+						}
+						else if (ClientPrefs.data.menuType == 'FNF') {
+							MusicBeatState.switchState(new FNFMainMenu());
 						}
 
 						PlayState.cancelMusicFadeTween();

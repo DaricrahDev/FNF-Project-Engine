@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="menu_options.png">
+	<!-- Created using the Spritesheet and XML generator -->
+	<!-- https://uncertainprod.github.io/FNF-Spritesheet-XML-generator-Web -->
+	<SubTexture name="options basic0000" x="483" y="586" width="464" height="225" frameX="-5" frameY="-4" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0001" x="483" y="586" width="464" height="225" frameX="-5" frameY="-4" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0002" x="483" y="586" width="464" height="225" frameX="-5" frameY="-4" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0003" x="0" y="586" width="483" height="234" frameX="-1" frameY="2" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0004" x="0" y="586" width="483" height="234" frameX="-1" frameY="2" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0005" x="0" y="586" width="483" height="234" frameX="-1" frameY="2" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0006" x="625" y="294" width="487" height="233" frameX="2" frameY="0" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0007" x="625" y="294" width="487" height="233" frameX="2" frameY="0" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options basic0008" x="625" y="294" width="487" height="233" frameX="2" frameY="0" frameWidth="483" frameHeight="232"/>
+	<SubTexture name="options white0000" x="0" y="294" width="625" height="292" frameX="2" frameY="2" frameWidth="631" frameHeight="294"/>
+	<SubTexture name="options white0001" x="0" y="0" width="628" height="294" frameX="2" frameY="-2" frameWidth="631" frameHeight="294"/>
+	<SubTexture name="options white0002" x="628" y="0" width="632" height="291" frameX="-1" frameY="-2" frameWidth="631" frameHeight="294"/>
+</TextureAtlas>

@@ -104,6 +104,19 @@ class PlayState extends MusicBeatState
 		['¡¡Perfecto!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
 	];
 
+	public static var ratingStuffPT:Array<Dynamic> = [
+		['Lixo', 0.2], //From 0% to 19%
+		['Merda', 0.4], //From 20% to 39%
+		['Ruim', 0.5], //From 40% to 49%
+		['A Sério?', 0.6], //From 50% to 59%
+		['Não', 0.69], //From 60% to 68%
+		['Ótimo', 0.7], //69%
+		['Bom', 0.8], //From 70% to 79%
+		['Excelente', 0.9], //From 80% to 89%
+		['Incrível!', 1], //From 90% to 99%
+		['Perfeito!!', 1] //The value on this one isn't used actually, since Perfect is always "1"
+	];
+
 	//event variables
 	private var isCameraOnForcedPos:Bool = false;
 
@@ -1065,6 +1078,7 @@ class PlayState extends MusicBeatState
 	{
 		var str:String = ratingName;
 		var strESP:String = ratingNameESP;
+		var strPT:String = ratingNamePT;
 		if(totalPlayed != 0)
 		{
 			var percent:Float = CoolUtil.floorDecimal(ratingPercent * 100, 2);
@@ -1081,6 +1095,10 @@ class PlayState extends MusicBeatState
 		scoreTxt.text = 'Puntuación: ' + songScore
          + ' | Fallos: ' + songMisses
          + ' | Clasificación: ' + strESP;
+		case 'Português':
+		scoreTxt.text = 'Pontuação: ' + songScore
+         + ' | Sente Falta: ' + songMisses
+         + ' | Classificação: ' + strPT;
 		}
 
 		if(ClientPrefs.data.scoreZoom && !miss && !cpuControlled)
@@ -3118,6 +3136,7 @@ class PlayState extends MusicBeatState
 
 	public var ratingName:String = '?';
 	public var ratingNameESP:String = '?';
+	public var ratingNamePT:String = '?';
 	public var ratingPercent:Float;
 	public var ratingFC:String;
 	public function RecalculateRating(badHit:Bool = false) {

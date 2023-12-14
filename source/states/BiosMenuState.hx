@@ -1,6 +1,5 @@
 package states;
 
-import states.UnfinishedWarn.UnfinishedWarning;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.display.FlxGridOverlay;
 import flixel.addons.display.FlxBackdrop;
@@ -181,9 +180,6 @@ class BiosMenuState extends MusicBeatState {
 					}
 					else if (ClientPrefs.data.menuType == 'FNF') {
 						MusicBeatState.switchState(new FNFMainMenu());
-					}
-					else if (ClientPrefs.data.menuType == 'PE (Mouse)') {
-						MusicBeatState.switchState(new UnfinishedWarning());
 					}
 				}
 		
